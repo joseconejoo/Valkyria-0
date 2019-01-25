@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+{{ my_text_with_html|safe }}
+
+{% autoescape off %}
+    {{ my_test_with_html }}
+{% endautoescape %}
+
+<head>
+	<title></title>
+	<input type="text" name="">
+</head>
+<body>
+
+
+</body>
+</html>
