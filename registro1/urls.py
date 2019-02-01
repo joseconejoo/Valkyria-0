@@ -9,6 +9,13 @@ urlpatterns = [
     path('post/new', views.post_new, name='post_new'),
     path('post/<int:pk>/edit/', views.post_edit, name='post_edit'),
     path('registros', views.registros1.as_view(), name='registros1'),
-    path('usuario/', views.datos_u, name='datos_u'),
+    #si no se define no actua el int:pk
+    path('perfil/<int:pk>/', views.datos_u, name='datos_u'),
+    #habia colocado mal el int:pk/> no lo habia cerrado y ocasiono un bug con el "/"
+    # habia colocado <int:pk/>
+    # lo corregi a <int:pk>/ pero daba error le agregue // y luego le borre uno
+    path('perfil', views.Datos1, name='datos1'),
+    path('datos/<int:pk>/edit/', views.datose, name='datose'),
+
 
 ]

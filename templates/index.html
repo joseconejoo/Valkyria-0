@@ -24,17 +24,36 @@
 <body>
 	<div class="contenedor">
 		<article>
+			{% if user.username %}
+
+			 <p> {{ user.username }}</p>
+			 <p> {{ datos.usuario }}</p>
+			 <p> {{ datos.pk }}</p>
+
+			 <!-- Si la base de datos no encuentra ningun valor es falso, si es cierto se ejecuta.
+			 	Si aqui imprime el usuario 2 veces (datos.user = user.username) entonces abajo se cumplira el condicional de mostrar datos igualmente.
+			 -->
+			 {% endif %}
 
 
 			{% if user.is_authenticated %}
 			<h1>Bienvenido.</h1>
-			<a class="boton-abrir" href="{% url 'logout' %}">logout</a>
+			<a class="boton-abrir" id="boton-abrir" href="{% url 'logout' %}">logout</a>
+			{% if datos.usuario %}
+			<!-- Si la base de datos no encuentra ningun valor es falso, si es cierto se ejecuta.
+			-->
+			<a class="boton-abrir" id="boton-abrir" href="{% url 'datos_u' pk=datos.pk  %}">Perfil</a>
+			<!-- Aqui se le envia un argumento a las views con el href
+			-->
+			{% else %}
+			<a  href="{% url 'datos1' %}" class="boton-abrir">Perfil</a>
+
+			{% endif %}
+
 			{% else %}
 			<h1>¿Preparado para ingresar?</h1>
 			<a class="boton-abrir" id="boton-abrir" href="{% url 'login'%}">Login</a>
 			<a class="boton-abrir" id="boton-abrir" href="{% url 'registros1'%}">Registrese</a>
-
-
 
 		    {% endif %}
 			<p>
@@ -45,7 +64,8 @@
 		<div class="page-header">
 		    <h1><a href="/">Valkyria</a></h1>
 		    {% if user.is_authenticated %}
-		    <a href="{% url 'post_new' %}" class="top-menu"><span class="glyphicon glyphicon-plus"></span></a>
+		    {% block entrada %}
+		    {% endblock %}
 		    {% else %}
 		    {% endif %}
 
@@ -73,9 +93,7 @@
 				<h4>El sistema cierra a las 9:00PM.</h4>
 				<form method= "post">
 
-					{% csrf_token %}
 					{# A more "HTML" way of creating the login form#}
-					{{ form.as_p }}
 
 				<button type="submit">Login</button>
 
