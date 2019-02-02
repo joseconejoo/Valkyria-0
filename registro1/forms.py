@@ -11,6 +11,6 @@ class PostForm(forms.ModelForm):
 class DatosF(forms.ModelForm):
 	class Meta:
 		model = Datos
-		fields = ('usuario', 'nombre', 'apellido', 'dingreso', 'cedula', 'email')
+		fields = ('nombre', 'apellido','dingreso', 'cedula', 'email','fedicion')
 
 
