@@ -21,7 +21,9 @@ def post_list(request):
     posts = Post.objects.filter(published_date__lte=timezone.now()).order_by('published_date')
     #published_date__lte es una fecha para comparar y ordenad el published_date
     #datos = Datos.objects.get(usuario_id=10)
-    if request.user.is_authenticated==True:
+    if request.user.is_authenticated==True and Datos.objects.filter(usuario_id=request.user.pk).exists()==True:
+        #datos no lleva request.datos porque eso se configura en el wsgi, es decir porque
+        #la de user es externa lleva request.user en resumidas palabras
         usuarioPs=request.user.pk
         datos = Datos.objects.get(usuario_id=usuarioPs)
         return render(request, 'post_list.html', {'posts': posts, 'datos': datos})
