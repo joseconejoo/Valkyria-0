@@ -13,21 +13,13 @@ class Post(models.Model):
     def publish(self):
         self.published_date = timezone.now()
         self.save()
-    #El __str__ es lo que devolvera al escribir xxxx.objects.all()
+
     def __str__(self):
         return self.title
-
 class Datos(models.Model):
-    usuario = models.OneToOneField('auth.User',on_delete=models.CASCADE, primary_key=True, unique=True)
-    nombre = models.CharField(max_length=200, default = "Ingrese Nombre")
-    apellido= models.CharField(max_length=200, default = "Ingrese Apellido")
+    usuario = models.ForeignKey("auth.User",on_delete=models.CASCADE, null=True)
+    nombre = models.CharField(max_length=200)
+    apellido= models.CharField(max_length=200)
     dingreso=models.DateTimeField(default=timezone.now)
-    cedula=models.IntegerField(default = 20000)
-    email=models.EmailField(default = 'ejemplo@go.com')
-    fedicion=models.DateTimeField(blank=True, null=True)
-    def publish(self):
-        self.fedicion = timezone.now()
-        self.save()
-
-    def __str__(self):
-        return self.usuario
+    cedula=models.IntegerField()
+    email=models.EmailField()
