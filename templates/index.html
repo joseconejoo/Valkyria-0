@@ -24,6 +24,10 @@
 <body>
 	<div class="contenedor">
 		<article>
+			{% if user.is_superuser %}
+			<p>usted es super usuario</p>
+
+			{% endif %}
 			{% if user.username %}
 
 			 <p> {{ user.username }}</p>

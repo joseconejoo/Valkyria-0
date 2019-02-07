@@ -16,6 +16,8 @@ urlpatterns = [
     # lo corregi a <int:pk>/ pero daba error le agregue // y luego le borre uno
     path('perfil', views.Datos1, name='datos1'),
     path('datos/<int:pk>/edit/', views.datose, name='datose'),
+    path('login/', views.login.as_view(), name='login'),
+    #error de 1 tomado pero regresa 2. si no coloco as_view
 
 
 ]

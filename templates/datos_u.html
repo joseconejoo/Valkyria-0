@@ -6,6 +6,7 @@
     {% if user.is_authenticated %}
 
 	<a class="btn btn-default" href="{% url 'datose' pk=datos.pk %}"><span class="glyphicon glyphicon-pencil"></span></a>
+	<p> </p>
 	<p>Nombre de usuario: {{ datos.usuario|linebreaksbr }}</p>
 	<p>Nombre: {{ datos.nombre|linebreaksbr }}</p>
 	<p>Apellido:  {{ datos.apellido|linebreaksbr }}</p>

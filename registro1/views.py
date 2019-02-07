@@ -13,6 +13,8 @@ from .forms import PostForm,DatosF
 from django.contrib.auth.forms import UserCreationForm
 from django.views import generic
 
+from django.contrib.auth.views import LoginView
+
 # Create your views here.
 def post_detail(request, pk):
     post = get_object_or_404(Post, pk=pk)
@@ -24,6 +26,8 @@ def post_list(request):
     if request.user.is_authenticated==True and Datos.objects.filter(usuario_id=request.user.pk).exists()==True:
         #datos no lleva request.datos porque eso se configura en el wsgi, es decir porque
         #la de user es externa lleva request.user en resumidas palabras
+        #if user is not None:
+        #Books.objects.order_by('name')
         usuarioPs=request.user.pk
         datos = Datos.objects.get(usuario_id=usuarioPs)
         return render(request, 'post_list.html', {'posts': posts, 'datos': datos})
@@ -60,6 +64,7 @@ def datose(request, pk):
     post = get_object_or_404(Datos, pk=pk)
     if request.method == "POST":
         form = DatosF(request.POST, instance=post)
+        #la instancia sirve para almacenar los datos que se recogieron en el formulario
         if form.is_valid():
             post = form.save(commit=False)
             post.usuario = request.user
@@ -105,3 +110,17 @@ class registros1(generic.CreateView):
     success_url = reverse_lazy('login')
     template_name = 'registros1.html'
 
+class login(LoginView):
+    template_name = 'login.html'
+    #la funcion dispatch viene de LoginView el cual como template_name se sobreescribe como
+    #si fuese un molde
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated!=True:
+
+            if self.redirect_authenticated_user and self.request.user.is_authenticated:
+                redirect_to = self.get_success_url()
+                return HttpResponseRedirect(redirect_to)
+            return super().dispatch(request, *args, **kwargs)
+        else:
+            redirect_to = self.get_success_url()
+            return HttpResponseRedirect(redirect_to)
