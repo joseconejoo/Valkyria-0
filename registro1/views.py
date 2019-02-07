@@ -20,7 +20,8 @@ def post_detail(request, pk):
     post = get_object_or_404(Post, pk=pk)
     return render(request, 'post_detail.html', {'post': post})
 def post_list(request):
-    posts = Post.objects.filter(published_date__lte=timezone.now()).order_by('published_date')
+    posts = Post.objects.filter(published_date__lte=timezone.now()).order_by('-published_date')
+    # el - en published_date se imprime descendente si quito el " - " se vuelve ascendente
     #published_date__lte es una fecha para comparar y ordenad el published_date
     #datos = Datos.objects.get(usuario_id=10)
     if request.user.is_authenticated==True and Datos.objects.filter(usuario_id=request.user.pk).exists()==True:
