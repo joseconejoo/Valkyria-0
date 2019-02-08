@@ -93,7 +93,7 @@ def post_new(request):
         form = PostForm()
     return render(request, 'post_edit.html', {'form': form})
 def post_edit(request, pk):
-    post = get_object_or_404(Post, pk)
+    post = get_object_or_404(Post, pk=pk)
     if request.method == "POST":
         form = PostForm(request.POST, instance=post)
         if form.is_valid():
