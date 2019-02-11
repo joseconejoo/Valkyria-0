@@ -11,6 +11,8 @@ from .forms import PostForm,DatosF
 
 
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
+
 from django.views import generic
 
 from django.contrib.auth.views import LoginView
@@ -125,3 +127,13 @@ class login(LoginView):
         else:
             redirect_to = self.get_success_url()
             return HttpResponseRedirect(redirect_to)
+
+def v_us1(request):
+    v_us = User.objects.order_by('id')
+
+    if request.user.is_authenticated==True:
+        return render(request, 'v_us1.html', {'v_us': v_us})
+    
+    else:
+        return HttpResponseRedirect("/")
+

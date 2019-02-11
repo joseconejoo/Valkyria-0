@@ -12,7 +12,9 @@
 	<link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,600|Open+Sans" rel="stylesheet">
 	
 	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+	<!--
 	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+-->
 	<link href='//fonts.googleapis.com/css?family=Lobster&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
 
 	<link rel="stylesheet" href="{% static 'lib/fontawesome/css/all.css' %}">
@@ -43,10 +45,13 @@
 			{% if user.is_authenticated %}
 			<h1>Bienvenido.</h1>
 			<a class="boton-abrir" id="boton-abrir" href="{% url 'logout' %}">logout</a>
+			<a class="boton-abrir" id="boton-abrir" href="{% url 'v_us1' %}">Lista</a>
+
 			{% if datos.usuario %}
 			<!-- Si la base de datos no encuentra ningun valor es falso, si es cierto se ejecuta.
 			-->
 			<a class="boton-abrir" id="boton-abrir" href="{% url 'datos_u' pk=datos.pk  %}">Perfil</a>
+
 			<!-- Aqui se le envia un argumento a las views con el href
 			-->
 			{% else %}

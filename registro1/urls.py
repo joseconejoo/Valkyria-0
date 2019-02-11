@@ -17,6 +17,8 @@ urlpatterns = [
     path('perfil', views.Datos1, name='datos1'),
     path('datos/<int:pk>/edit/', views.datose, name='datose'),
     path('login/', views.login.as_view(), name='login'),
+    path('u_lista', views.v_us1, name='v_us1'),
+
     #error de 1 tomado pero regresa 2. si no coloco as_view
 
 
