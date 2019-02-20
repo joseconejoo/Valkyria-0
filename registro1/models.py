@@ -30,4 +30,4 @@ class Datos(models.Model):
         self.save()
 
     def __str__(self):
-        return self.usuario
+        return str(self.usuario_id)

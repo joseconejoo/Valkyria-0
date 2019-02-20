@@ -47,7 +47,7 @@
 			<a class="boton-abrir" id="boton-abrir" href="{% url 'logout' %}">logout</a>
 			<a class="boton-abrir" id="boton-abrir" href="{% url 'v_us1' %}">Lista</a>
 
-			{% if datos.usuario %}
+			{% if datos.nombre %}
 			<!-- Si la base de datos no encuentra ningun valor es falso, si es cierto se ejecuta.
 			-->
 			<a class="boton-abrir" id="boton-abrir" href="{% url 'datos_u' pk=datos.pk  %}">Perfil</a>

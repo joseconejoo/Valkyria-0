@@ -22,31 +22,50 @@ def post_detail(request, pk):
     post = get_object_or_404(Post, pk=pk)
     return render(request, 'post_detail.html', {'post': post})
 def post_list(request):
-    posts = Post.objects.filter(published_date__lte=timezone.now()).order_by('-published_date')
-    # el - en published_date se imprime descendente si quito el " - " se vuelve ascendente
-    #published_date__lte es una fecha para comparar y ordenad el published_date
-    #datos = Datos.objects.get(usuario_id=10)
-    if request.user.is_authenticated==True and Datos.objects.filter(usuario_id=request.user.pk).exists()==True:
-        #datos no lleva request.datos porque eso se configura en el wsgi, es decir porque
-        #la de user es externa lleva request.user en resumidas palabras
-        #if user is not None:
-        #Books.objects.order_by('name')
-        usuarioPs=request.user.pk
-        datos = Datos.objects.get(usuario_id=usuarioPs)
-        return render(request, 'post_list.html', {'posts': posts, 'datos': datos})
+    print (User.objects.get(id=6))
+    if request.user.is_authenticated == True:
+        
+        posts = Post.objects.filter(published_date__lte=timezone.now()).order_by('-published_date')
+        # el - en published_date se imprime descendente si quito el " - " se vuelve ascendente
+        #published_date__lte es una fecha para comparar y ordenad el published_date
+        #datos = Datos.objects.get(usuario_id=10)
+        if request.user.is_authenticated==True and Datos.objects.filter(usuario_id=request.user.pk).exists()==True:
+            #datos no lleva request.datos porque eso se configura en el wsgi, es decir porque
+            #la de user es externa lleva request.user en resumidas palabras
+            #if user is not None:
+            #Books.objects.order_by('name')
+            usuarioPs=request.user.pk
+            datos = Datos.objects.get(usuario_id=usuarioPs)
+            return render(request, 'post_list.html', {'posts': posts, 'datos': datos})
+        else:
+            return render(request, 'post_list.html', {'posts': posts})
+
+        #usar usuario_id=10 y pk=10 es lo mismo
+        #objects.get es el que funciona
+        #datos = Datos.objects.filter(Datos, pk=pk)
+        #datos = Datos.objects.filter(dingreso__lte=timezone.now()).order_by('dingreso')
     else:
-        return render(request, 'post_list.html', {'posts': posts})
-
-    #usar usuario_id=10 y pk=10 es lo mismo
-    #objects.get es el que funciona
-    #datos = Datos.objects.filter(Datos, pk=pk)
-    #datos = Datos.objects.filter(dingreso__lte=timezone.now()).order_by('dingreso')
-
+        return HttpResponseRedirect("login")
 
 def datos_u(request, pk):
-    datos = get_object_or_404(Datos, pk=pk)
-    return render(request, 'datos_u.html', {'datos': datos})
+    try:
+       dat=Datos.objects.get(pk=pk)
+       datos = get_object_or_404(Datos, pk=pk)
+       return render(request, 'datos_u.html', {'datos': datos})
 
+    except:
+        if request.method == "POST":
+            form = DatosF(request.POST)
+            if form.is_valid():
+                post = form.save(commit=False)
+                post.usuario = User.objects.get(id=pk)
+                post.fedicion = timezone.now()
+                post.save()
+
+                return redirect('datos_u', pk=post.pk)
+        else:
+            form = DatosF()
+        return render(request, 'datose.html', {'form': form})
 def Datos1(request):
     if request.method == "POST":
         form = DatosF(request.POST)
@@ -55,6 +74,8 @@ def Datos1(request):
             post.usuario = request.user
             post.fedicion = timezone.now()
             post.save()
+            print (post.usuario + "AKA1")
+
             return redirect('datos_u', pk=post.usuario)
             #si cambio la pk de post a datos.usuario permite crear varios datos bug. y unique en models
             #Permite crear varios "datos" a un mismo usuario por un Bug. Ademas de que no tenia habilitado 
@@ -129,10 +150,11 @@ class login(LoginView):
             return HttpResponseRedirect(redirect_to)
 
 def v_us1(request):
-    v_us = User.objects.order_by('id')
 
     if request.user.is_authenticated==True:
-        return render(request, 'v_us1.html', {'v_us': v_us})
+        v_us = User.objects.order_by('id')
+        datos = Datos.objects.order_by('usuario_id')
+        return render(request, 'v_us1.html', {'v_us': v_us,'datos': datos})
     
     else:
         return HttpResponseRedirect("/")
