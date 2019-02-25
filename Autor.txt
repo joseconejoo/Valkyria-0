@@ -1,3 +1,7 @@
-Actualmente: Olwer Altuve Santaromita 26.882.820
+Actualmente: 
+Olwer Altuve Santaromita 26.882.820
 
-Esperando frontends
+Backend: Olwer Altuve
+Html : Jose Diaz - Olwer Altuve
+css: Jose diaz
+
