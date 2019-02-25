@@ -2,7 +2,13 @@
 
 {% block content2 %}
   {% if user.is_authenticated %}
-    Buenas {{ user.username }}! Mira las nuevas noticias que hay.
+  <div class="M_d">
+    <p id="contSaludo"></p>
+    {{ user.username }}! Mira las nuevas noticias que hay.
+          
+  </div>
+
+    
     <p></p>
   {% else %}
     <p>Usted es un visitante.</p>
@@ -10,7 +16,7 @@
 
 {% endblock %}
 {% block entrada %}
-<a href="{% url 'post_new' %}" class="top-menu"><span class="glyphicon glyphicon-plus"></span></a>
+<a href="{% url 'post_new' %}" onclick="accion()" class="top-menu"><span class="glyphicon glyphicon-plus"></span></a>
 {% endblock %}
 {% block content %}
 

@@ -6,7 +6,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.urls import reverse, reverse_lazy
 from django.http import HttpResponseRedirect, HttpResponse
-from .models import Datos, Post
+from .models import Datos, Post, Bolsa, prod_Bolsa, product
 from .forms import PostForm,DatosF
 
 
@@ -22,7 +22,16 @@ def post_detail(request, pk):
     post = get_object_or_404(Post, pk=pk)
     return render(request, 'post_detail.html', {'post': post})
 def post_list(request):
+    """
     print (User.objects.get(id=6))
+    misReservas = Datos.objects.filter(usuario__username='Metal')
+    #misReservas = Datos.objects.filter(usuario='Metal')
+    #eso retorn un int por lo visto, y da error si no lo coloco con usuario __username
+    #la instruccion hecha correctamente me retorna el return de la tabla Datos
+    for x12 in misReservas:
+        print (x12)
+        print (x12)
+    """
     if request.user.is_authenticated == True:
         
         posts = Post.objects.filter(published_date__lte=timezone.now()).order_by('-published_date')
@@ -51,7 +60,7 @@ def datos_u(request, pk):
     try:
        dat=Datos.objects.get(pk=pk)
        datos = get_object_or_404(Datos, pk=pk)
-       return render(request, 'datos_u.html', {'datos': datos})
+       return render(request, 'datos_u.html', {'datos': datos,'dat': dat})
 
     except:
         if request.method == "POST":
@@ -74,8 +83,10 @@ def Datos1(request):
             post.usuario = request.user
             post.fedicion = timezone.now()
             post.save()
+            """
             print (post.usuario + "AKA1")
-
+            ese print no se va a imprimir porque se ejecuta con POST y lo "protege"
+            """
             return redirect('datos_u', pk=post.usuario)
             #si cambio la pk de post a datos.usuario permite crear varios datos bug. y unique en models
             #Permite crear varios "datos" a un mismo usuario por un Bug. Ademas de que no tenia habilitado 
@@ -111,7 +122,7 @@ def post_new(request):
             post.author = request.user
             post.published_date = timezone.now()
             post.save()
-            return redirect('views.post_detail', pk=post.pk)
+            return redirect('post_detail', pk=post.pk)
     else:
         form = PostForm()
     return render(request, 'post_edit.html', {'form': form})

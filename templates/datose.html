@@ -6,7 +6,7 @@
     	<h1>Perfil de usuario</h1>
     	<form method="POST" class="post-form">{% csrf_token %}
         	{{ form.as_p }}
-        	<button type="submit" class="save btn btn-default">Save</button>
+        	<button type="submit" onclick="accion()" class="save btn btn-default">Save</button>
     	</form>
 
         {% else %}

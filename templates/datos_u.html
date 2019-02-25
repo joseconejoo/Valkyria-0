@@ -5,13 +5,21 @@
 
     {% if user.is_authenticated %}
 
-	<a class="btn btn-default" href="{% url 'datose' pk=datos.pk %}"><span class="glyphicon glyphicon-pencil"></span></a>
+	<a class="btn btn-default" href="{% url 'datose' pk=datos.pk %}"><span class="glyphicon glyphicon-pencil" onclick="accion()"></span></a>
 	<p> </p>
 	<p>Nombre de usuario: {{ datos.usuario|linebreaksbr }}</p>
 	<p>Nombre: {{ datos.nombre|linebreaksbr }}</p>
 	<p>Apellido:  {{ datos.apellido|linebreaksbr }}</p>
 	<p>Cedula: {{ datos.cedula|linebreaksbr }}</p>
 	<p>Correo:  {{ datos.email|linebreaksbr }}</p>
+	<p>----------------------------------------</p>
+	<p>Correo:  {{ dat.email|linebreaksbr }}</p>
+	<p>Correo:  {{ dat.pk|linebreaksbr }}</p>
+	<p>Correo:  {{ dat.nombre|linebreaksbr }}</p>
+
+
+
+
 
 	<div class="date">
 	    Ultima edicion de perfil: {{ datos.fedicion }}
