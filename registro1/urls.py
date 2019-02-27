@@ -17,9 +17,15 @@ urlpatterns = [
     path('perfil', views.Datos1, name='datos1'),
     path('datos/<int:pk>/edit/', views.datose, name='datose'),
     path('login/', views.login.as_view(), name='login'),
-    path('u_lista', views.v_us1, name='v_us1'),
-
     #error de 1 tomado pero regresa 2. si no coloco as_view
 
+    path('u_lista', views.v_us1, name='v_us1'),
+    path('bolsa/<int:pk>/', views.Bolsa1, name='Bolsa'),
+    #detail
+    path('bolsa/', views.Bolsa_N, name='Bolsa_N'),
+    path('bolsas/lista', views.Bolsas, name='Bolsas'),
+    #detail
+    path('producto/', views.Product_N, name='Product_N'),
+    path('productos/lista', views.productos, name='productos'),
 
 ]

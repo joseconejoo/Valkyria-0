@@ -22,7 +22,7 @@ class BolsaF(forms.ModelForm):
 class prod_BolsaF(forms.ModelForm):
 	class Meta:
 		model = prod_Bolsa
-		fields = ('cant_prod',)
+		fields = ('cant_prod',"id_prod")
 
 class productF(forms.ModelForm):
 	class Meta:

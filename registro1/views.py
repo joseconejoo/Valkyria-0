@@ -7,7 +7,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.urls import reverse, reverse_lazy
 from django.http import HttpResponseRedirect, HttpResponse
 from .models import Datos, Post, Bolsa, prod_Bolsa, product
-from .forms import PostForm,DatosF
+from .forms import PostForm,DatosF, BolsaF, prod_BolsaF, productF
 
 
 from django.contrib.auth.forms import UserCreationForm
@@ -110,9 +110,6 @@ def datose(request, pk):
     else:
         form = DatosF (instance=post)
     return render(request, 'datose.html', {'form': form})
-def datos_vi(request):
-    posts = Datos.objects.filter(published_date__lte=timezone.now()).order_by('published_date')
-    return render(request, 'Datos1.html', {'datos': datos})
 
 def post_new(request):
     if request.method == "POST":
@@ -170,3 +167,51 @@ def v_us1(request):
     else:
         return HttpResponseRedirect("/")
 
+def Bolsa_N(request):
+    if request.method == "POST":
+        form = BolsaF(request.POST) 
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.author = request.user
+            post.save()
+            return redirect('Bolsa', pk=post.pk)
+    else:
+        form = BolsaF()
+    return render(request, 'Bolsa_N.html', {'form': form})
+
+def Bolsa1(request, pk):
+    post = get_object_or_404(Bolsa, pk=pk)
+    return render(request, 'Bolsa.html', {'post': post})
+
+
+def Bolsas(request):
+    post = Bolsa.objects.order_by('id')
+    return render(request, 'Bolsas.html', {'posts': post})
+    
+def Product_N(request):
+    if request.method == "POST":
+        form = prod_BolsaF(request.POST)
+        form2 = productF(request.POST) 
+
+        if form.is_valid() and form2.is_valid():
+            post = form.save(commit=False)
+            post.author = request.user
+            post.Num_Bolsa=1
+            post.save()
+            post2 = form2.save(commit=False)
+            post.Num_prod=1
+            post2.author = request.user
+            post2.save()
+
+            return redirect('Bolsa', pk=post.pk)
+    else:
+        form = prod_BolsaF()
+        form2 = productF() 
+    return render(request, 'producto.html', {'form': form,"form2": form2})
+
+
+def productos(request):
+    post = prod_Bolsa.objects.order_by('id')
+    post2 = product.objects.order_by('id')
+
+    return render(request, 'productos.html', {'post': post,"post2":post2})

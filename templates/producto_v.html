@@ -1,0 +1,22 @@
+{% extends 'index.html' %}
+
+{% block content %}
+    <div class="Producto">
+        {% if post.published_date %}
+            <div class="por hacer">
+                {{ post.published_date }}
+            </div>
+            
+        {% endif %}
+        {% if user.is_authenticated %}
+
+            <a class="btn btn-default" href="{% url 'product' pk=post.pk %}"><span class="glyphicon glyphicon-pencil"></span></a>
+        {% endif %}
+
+        <p>Numero de Bolsa: {{ post.pk }}<p>
+        <p>Fecha: {{ post.fecha_B }}<p>
+        <p>Costo:  {{ post.coste_B|linebreaksbr }}</p>
+        <p>Autor: {{ post.author }}</p>
+
+    </div>
+{% endblock %}

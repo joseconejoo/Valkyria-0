@@ -2,9 +2,9 @@
 
 {% block content %}
 
-<div class="p_edit">
+<div class="Bolsa_N">
 
-<h1 class="NP">New Post</h1>
+<h1 class="Np2">Nueva Bolsa</h1>
 {% for field in form %}
 <form method="post">
 		{% csrf_token %}
@@ -20,7 +20,7 @@
 
 	{% endfor %}
 	
-	<button type="submit" >Publicar</button>
+	<button type="submit"" >Guardar</button>
 	</div>
 </form>
 {% endblock %}

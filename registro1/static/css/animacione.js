@@ -2,18 +2,8 @@
 function accion() {
 alert ("Presione Para Continuar");
 };
-/*
-var pesta;
 
-pesta ="Presione Para Continuar";
-alert (pesta);
-/*
-var Menu * document.getElementByid('Menu');
-var nav * document.getElementByid('nav');
 
-Menu.addEventListener('clik', function(){
-	nav.classlist.toggle('mostrar');
-})
 /*
 
 login
@@ -27,38 +17,12 @@ if.... (resultado == true) {
 	alert( usuario incoreto
 	}
 */
-/*
-function accion() {
-	var ancla=document.getElementByclassName('nav-enlace');
-	for (var i = 0; i < ancla.length ; i++) {
-		ancla[i].classlist.toggle('desaparece');
-	}
-}
 
-*/
 
 function accion() {
 alert ("correcto");
 };
-/*
-$(function() { 
-  
-  var botonMostrar = $("#boton-mostrar"),
-      botonOcultar = $("#boton-ocultar"),
-      parrafo = $("#parrafo");
-  
-  botonMostrar.on("click", function() {
-    parrafo.show("slow");
-  });
-  
-  botonOcultar.on("click", function() {
-    parrafo.hide(2000, function() {
-      console.log("Mostrando texto");
-    });
-  }); 
-  
-});
-/*
+
 
 
 /*
@@ -93,30 +57,8 @@ function ActualizarHora(){
 
 setInterval(ActualizarHora,1000);
 
-/*
-(function hola() {
-  function mostrarHora() {
-    var fecha = new Date(), // nuevo objeto Fecha
-        hora = fecha.getHours() + ":" + fecha.getMinutes() + ":" + fecha.getSeconds();
-    $('#hora').text(hora);
-  }
-  setInterval(mostrarHora, 1000); // la función "mostrarHora" se ejecuta cada segundo
-});
-*/
-/*
-ocultabotones
 
-$(function() { 
-  var botonOcultar = $("#desconectar"),
-      parrafo = $("#boton-abrir");
-  
-  botonOcultar.on("click", function() {
-    boton-abrir.hide();
-  });
-});
-   
 
-*/
 
 /* movimiento imagen
 $("boton-abrir").click(function(){
@@ -131,3 +73,17 @@ $("patria").animate({
 })
 
 */
+
+function mostrar() {
+    document.getElementById("sidebar").style.width = "300px";
+    document.getElementById("M_boton-abrir").style.marginLeft = "300px";
+    document.getElementById("abrir").style.display = "none";
+    document.getElementById("cerrar").style.display = "inline";
+}
+
+function ocultar() {
+    document.getElementById("sidebar").style.width = "0";
+    document.getElementById("M_boton-abrir").style.marginLeft = "0";
+    document.getElementById("abrir").style.display = "inline";
+    document.getElementById("cerrar").style.display = "none";
+}

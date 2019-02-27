@@ -17,9 +17,9 @@
 
 
     {% for v_us1 in v_us %}
-    <div class="usuarios">
+
+        <div class="usuarios">
           <p>Nombre de usuario:<a href="{% url 'datos_u' v_us1.pk %}"> {{v_us1 }}</a></p>
-      
-    </div>
+        </div>
     {% endfor %}
 {% endblock %}

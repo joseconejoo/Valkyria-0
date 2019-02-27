@@ -42,7 +42,7 @@ class Bolsa(models.Model):
         return str(self.fecha_B)
 
 class prod_Bolsa(models.Model):
-    Num_Bolsa = models.OneToOneField(Bolsa,on_delete=models.CASCADE, primary_key=True, unique=True)
+    Num_Bolsa = models.ForeignKey(Bolsa,on_delete=models.CASCADE)
     author = models.ForeignKey('auth.User', on_delete=models.CASCADE, null=True)
     id_prod = models.IntegerField(unique=True)
     cant_prod = models.IntegerField(default=1)
