@@ -1,12 +1,7 @@
 {% extends 'index.html' %}
 
 {% block content2 %}
-  {% if user.is_authenticated %}
-    Buenas {{ user.username }}! Mira los usuarios.
-    <p></p>
-  {% else %}
-    <p>Usted es un visitante.</p>
-  {% endif %}
+
 
 {% endblock %}
 {% block entrada %}

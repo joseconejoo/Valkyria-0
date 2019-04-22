@@ -1,0 +1,20 @@
+{% extends 'index.html' %}
+
+{% block content2 %}
+
+{% endblock %}
+{% block entrada %}
+
+
+{% endblock %}
+{% block content %}
+<a class="btn btn-default" href="{% url 'Valid' %}"><span class="glyphicon glyphicon-plus">Añadir Codigo de registro</span></a>
+
+
+    {% for codigo in code %}
+
+        <div class="codigo">
+          <p>Codigo: {{codigo.codigo }}</p>
+        </div>
+    {% endfor %}
+{% endblock %}

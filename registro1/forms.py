@@ -1,18 +1,34 @@
 from django import forms
 from django.contrib.auth.models import User
-from .models import Datos, Post, Bolsa, prod_Bolsa, product
+from .models import Pagos, Codigos, Datos, Post, Bolsa, prod_Bolsa, product
 from django.contrib.auth.forms import UserCreationForm
+
+class PagosAF(forms.ModelForm):
+	class Meta:
+		model = Pagos
+		fields = ('confirmacion',)
+
+class PagosF(forms.ModelForm):
+	class Meta:
+		model = Pagos
+		fields = ('referencia',)
+
+class ValidF(forms.ModelForm):
+
+    class Meta:
+        model = Codigos
+        fields = ('codigo',)
 
 class PostForm(forms.ModelForm):
 
     class Meta:
         model = Post
-        fields = ('title', 'text',)
+        fields = ('titulo', 'texto',)
 
 class DatosF(forms.ModelForm):
 	class Meta:
 		model = Datos
-		fields = ('nombre', 'apellido','dingreso', 'cedula', 'email','fedicion')
+		fields = ('nombre', 'apellido', 'cedula', 'email')
 
 class BolsaF(forms.ModelForm):
 	class Meta:
@@ -22,7 +38,7 @@ class BolsaF(forms.ModelForm):
 class prod_BolsaF(forms.ModelForm):
 	class Meta:
 		model = prod_Bolsa
-		fields = ('cant_prod',"id_prod")
+		fields = ('cant_prod',)
 
 class productF(forms.ModelForm):
 	class Meta:

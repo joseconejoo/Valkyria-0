@@ -8,7 +8,7 @@ urlpatterns = [
     path('post/<int:pk>/', views.post_detail, name='post_detail'),	
     path('post/new', views.post_new, name='post_new'),
     path('post/<int:pk>/edit/', views.post_edit, name='post_edit'),
-    path('registros', views.registros1.as_view(), name='registros1'),
+    path('registros', views.registros1, name='registros1'),
     #si no se define no actua el int:pk
     path('perfil/<int:pk>/', views.datos_u, name='datos_u'),
     #habia colocado mal el int:pk/> no lo habia cerrado y ocasiono un bug con el "/"
@@ -25,7 +25,14 @@ urlpatterns = [
     path('bolsa/', views.Bolsa_N, name='Bolsa_N'),
     path('bolsas/lista', views.Bolsas, name='Bolsas'),
     #detail
-    path('producto/', views.Product_N, name='Product_N'),
-    path('productos/lista', views.productos, name='productos'),
+    path('producto/<int:pk>/', views.Product_N, name='Product_N'),
+    path('Codigos', views.Valid_v, name='Valid_v'),
+    path('Codigos/gen', views.Valid1, name='Valid'),
+    path('Error', views.Error, name='Error'),
+    path('pago/<int:pk>/', views.Pago1, name='Pago1'),
+    path('pago/<int:pk>/', views.Pago2, name='Pago2'),
+
+
+
 
 ]

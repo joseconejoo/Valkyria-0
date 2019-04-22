@@ -4,7 +4,7 @@
 {% endblock %}
 
 {% block entrada %}
-<a href="{% url 'Bolsa_N' %}"" class="top-menu"><span class="glyphicon glyphicon-plus" id="Parax123"> Nueva Bolsa</span></a>
+<a href="{% url 'Bolsa_N' %}" class="top-menu"><span class="glyphicon glyphicon-plus" id="Parax123"> Nueva Bolsa</span></a>
 {% endblock %}
 {% block content %}
 
@@ -12,12 +12,41 @@
     {% for post in posts %}
 
         <div class="post">
-            
             <h3>Numero de bolsa: <a href="{% url 'Bolsa' pk=post.pk %}">{{ post.pk }}</a></h3>
-            <p>{{ post.coste_B|linebreaksbr }}</p>
+            {% for post1 in posts2 %}
+
+                    {% if post1.Num_Bolsa %}
+
+                        {% ifequal post1.Num_Bolsa post %}
+                            <span>Esperando Comprobacion</span>
+                        {% else %}
+
+                        {% endifequal %}
+                    {% endif %}
+            
+            {% endfor %}
+            {% if posts2 %}
+                {% for post3 in posts3 %}
+                    {% ifequal post3 post.pk %}
+                        <span>No has pagado</span>
+                        <a href="{% url 'Pago1' pk=post.pk %}" class="top-menu"><span class="glyphicon glyphicon-plus" id="Pag24x"> Realizar pago</span></a>
+                    {% else %}
+                    {% endifequal %}
+                {% endfor %}
+            {% else %}
+                <span>No has pagado   </span>
+                 <a href="{% url 'Pago1' pk=post.pk %}" class="top-menu"><span class="glyphicon glyphicon-plus" id="Pag24x"> Realizar pago</span></a>
+
+            {% endif %}
+
+
+
+
+            <p>Costo total: {{ post.coste_B|linebreaksbr }}</p>
+
             <div class="date">
-                {{ post.published_date }}
-                <p>Autor: {{ post.author }}</p>
+                {{ post.fecha_publicacion }}
+                <p>Autor: {{ post.autor }}</p>
             </div>
         </div>
     {% endfor %}

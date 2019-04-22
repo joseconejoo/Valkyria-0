@@ -1,9 +1,4 @@
 
-function accion() {
-alert ("Presione Para Continuar");
-};
-
-
 /*
 
 login
@@ -20,7 +15,7 @@ if.... (resultado == true) {
 
 
 function accion() {
-alert ("correcto");
+alert ("hola");
 };
 
 

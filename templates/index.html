@@ -13,6 +13,7 @@
 	
 	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
 	<link href='//fonts.googleapis.com/css?family=Lobster&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+	<script type="text/javascript" src="{% static 'css/animacione.js' %}"></script>
 
 	<link rel="stylesheet" type="text/css" href="{% static 'css/style133.css' %}">
 	
@@ -52,6 +53,8 @@
 									<a class="boton-abrir" id="M_boton-abrir" href="{% url 'Bolsas' %}">Bolsas</a>
 									</li>
 									<a class="boton-abrir" id="M_boton-abrir" href="{% url 'v_us1' %}">Lista de usuarios</a>
+									<a class="boton-abrir" id="M_boton-abrir" href="{% url 'Valid_v' %}">Lista de codigos</a>
+
 									</li>
 									<li>
 									{% if datos.usuario %}
@@ -131,7 +134,6 @@
 		</div> 
 
 	</div>
-<script type="text/javascript" src="{% static 'css/animacione.js' %}"></script>
 </body>
 
 </html>

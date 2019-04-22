@@ -6,8 +6,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.urls import reverse, reverse_lazy
 from django.http import HttpResponseRedirect, HttpResponse
-from .models import Datos, Post, Bolsa, prod_Bolsa, product
-from .forms import PostForm,DatosF, BolsaF, prod_BolsaF, productF
+from .models import Pagos, Codigos, Datos, Post, Bolsa, prod_Bolsa, product
+from .forms import PagosAF, PagosF, ValidF, PostForm,DatosF, BolsaF, prod_BolsaF, productF
 
 
 from django.contrib.auth.forms import UserCreationForm
@@ -31,12 +31,18 @@ def post_list(request):
     for x12 in misReservas:
         print (x12)
         print (x12)
+
+
+    print (str(request.user) + "hola "+str(request.user.pk))
+
+    for x in post1:
+        print (x.Nombre_Del_CaMPO)
     """
     if request.user.is_authenticated == True:
         
-        posts = Post.objects.filter(published_date__lte=timezone.now()).order_by('-published_date')
-        # el - en published_date se imprime descendente si quito el " - " se vuelve ascendente
-        #published_date__lte es una fecha para comparar y ordenad el published_date
+        posts = Post.objects.filter(fecha_publicacion__lte=timezone.now()).order_by('-fecha_publicacion')
+        # el - en fecha_publicacion se imprime descendente si quito el " - " se vuelve ascendente
+        #fecha_publicacion__lte es una fecha para comparar y ordenad el fecha_publicacion
         #datos = Datos.objects.get(usuario_id=10)
         if request.user.is_authenticated==True and Datos.objects.filter(usuario_id=request.user.pk).exists()==True:
             #datos no lleva request.datos porque eso se configura en el wsgi, es decir porque
@@ -68,6 +74,8 @@ def datos_u(request, pk):
             if form.is_valid():
                 post = form.save(commit=False)
                 post.usuario = User.objects.get(id=pk)
+                #Si no coloco user.objects.get y solo coloco la pk o variable, no funciona
+                #Todo debe estar "instanciado"
                 post.fedicion = timezone.now()
                 post.save()
 
@@ -87,7 +95,7 @@ def Datos1(request):
             print (post.usuario + "AKA1")
             ese print no se va a imprimir porque se ejecuta con POST y lo "protege"
             """
-            return redirect('datos_u', pk=post.usuario)
+            return redirect('datos_u', pk=post.pk)
             #si cambio la pk de post a datos.usuario permite crear varios datos bug. y unique en models
             #Permite crear varios "datos" a un mismo usuario por un Bug. Ademas de que no tenia habilitado 
             #el request.user
@@ -95,6 +103,7 @@ def Datos1(request):
         form = DatosF()
     return render(request, 'datose.html', {'form': form})
     #datos1 no tiene HTML porque esta usando el de datose
+    #podria usar diccionarios en el form para cambiar nombre de campos quizas
 def datose(request, pk):
     post = get_object_or_404(Datos, pk=pk)
     if request.method == "POST":
@@ -104,7 +113,7 @@ def datose(request, pk):
             post = form.save(commit=False)
             post.usuario = request.user
             post.fedicion = timezone.now()
-            #en vez de fedicion estaba published_date, esto ocasionaba que no me guardara nada en fedicion
+            #en vez de fedicion estaba fecha_publicacion, esto ocasionaba que no me guardara nada en fedicion
             post.save()
             return redirect('datos_u', pk=post.pk)
     else:
@@ -116,8 +125,8 @@ def post_new(request):
         form = PostForm(request.POST)
         if form.is_valid():
             post = form.save(commit=False)
-            post.author = request.user
-            post.published_date = timezone.now()
+            post.autor = request.user
+            post.fecha_publicacion = timezone.now()
             post.save()
             return redirect('post_detail', pk=post.pk)
     else:
@@ -129,18 +138,35 @@ def post_edit(request, pk):
         form = PostForm(request.POST, instance=post)
         if form.is_valid():
             post = form.save(commit=False)
-            post.author = request.user
-            post.published_date = timezone.now()
+            post.autor = request.user
+            post.fecha_publicacion = timezone.now()
             post.save()
             return redirect('post_detail', pk=post.pk)
     else:
         form = PostForm(instance=post)
     return render(request, 'post_edit.html', {'form': form})
 
-class registros1(generic.CreateView):
-    form_class = UserCreationForm
-    success_url = reverse_lazy('login')
-    template_name = 'registros1.html'
+
+def registros1(request):
+    if request.method == "POST":
+        foxr = UserCreationForm(request.POST)
+        form = ValidF(request.POST)
+        if foxr.is_valid():
+            post = foxr.save(commit=False)
+            data1 = request.POST.get('codigo')
+            if Codigos.objects.filter(codigo=data1).exists()==True:
+                Codigos.objects.filter(codigo=data1).delete()
+                post.save()
+                return redirect('login')
+
+
+            else:
+                return HttpResponseRedirect("Error")
+    else:
+        foxr = UserCreationForm()
+        form = ValidF()
+
+    return render(request, 'registros1.html', {'form': foxr,'form2':form})
 
 class login(LoginView):
     template_name = 'login.html'
@@ -172,7 +198,7 @@ def Bolsa_N(request):
         form = BolsaF(request.POST) 
         if form.is_valid():
             post = form.save(commit=False)
-            post.author = request.user
+            post.autor = request.user
             post.save()
             return redirect('Bolsa', pk=post.pk)
     else:
@@ -181,37 +207,112 @@ def Bolsa_N(request):
 
 def Bolsa1(request, pk):
     post = get_object_or_404(Bolsa, pk=pk)
-    return render(request, 'Bolsa.html', {'post': post})
+    post2 = prod_Bolsa.objects.filter(Num_Bolsa=pk).order_by('id')
+
+    skuld=[]
+    for x2 in post2:
+        skuld.append(x2)
+    obtn = product.objects.filter(Num_prod__in=skuld).order_by('Num_prod')
+    diccionario={'post': post,'post2':post2,'post3':obtn}
+    return render(request, 'Bolsa.html', diccionario)
 
 
 def Bolsas(request):
     post = Bolsa.objects.order_by('id')
-    return render(request, 'Bolsas.html', {'posts': post})
+    post1 = Pagos.objects.filter(origen=request.user.pk).order_by('Num_Bolsa')
+    obtn,obtn2 = [],[]
+    for x in post1:
+        obtn2.append(int(str(x.Num_Bolsa)))
+    for x in post:
+        if x.pk not in obtn2:
+            obtn.append(x.pk)
+
+    return render(request, 'Bolsas.html', {'posts': post,'posts2':post1,'posts3':obtn})
     
-def Product_N(request):
+def Product_N(request, pk):
     if request.method == "POST":
-        form = prod_BolsaF(request.POST)
+        asddd=Bolsa.objects.get(id=pk)
+        fox = prod_BolsaF(request.POST)
         form2 = productF(request.POST) 
 
-        if form.is_valid() and form2.is_valid():
-            post = form.save(commit=False)
-            post.author = request.user
-            post.Num_Bolsa=1
-            post.save()
+        if fox.is_valid() and form2.is_valid():
+            post = fox.save(commit=False)
+            post.autor = request.user
+            post.Num_Bolsa=asddd
             post2 = form2.save(commit=False)
-            post.Num_prod=1
-            post2.author = request.user
+            post2.Num_prod=post.pk
+            post2.autor = request.user
+            post.save()
             post2.save()
 
-            return redirect('Bolsa', pk=post.pk)
+            return redirect('Bolsa', pk=pk)
     else:
-        form = prod_BolsaF()
+        fox = prod_BolsaF()
         form2 = productF() 
-    return render(request, 'producto.html', {'form': form,"form2": form2})
+    return render(request, 'producto.html', {'form': fox,"form2": form2})
 
 
-def productos(request):
-    post = prod_Bolsa.objects.order_by('id')
-    post2 = product.objects.order_by('id')
+def Valid_v(request):
+    post = Codigos.objects.order_by('id')
 
-    return render(request, 'productos.html', {'post': post,"post2":post2})
+    return render(request, 'valids.html', {'code': post})
+
+def Valid1(request):
+    if request.method == "POST":
+        form = ValidF(request.POST)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.save()
+            return redirect('Valid_v')
+    else:
+        form = ValidF()
+    return render(request, 'valid.html', {'form': form})
+
+def Error(request):
+    return render(request, "Negado.html")
+
+def Pago1(request, pk):
+    if request.method == "POST":
+        pagb = Bolsa.objects.order_by('id')
+        pag = Pagos.objects.filter(origen=request.user.pk).order_by('Num_Bolsa')
+        obtn,obtn2 = [],[]
+        for x in pag:
+            if obtn2:
+                break
+            else:
+                obtn2.append(int(str(x.Num_Bolsa)))
+
+        for x in pagb:
+            if x.pk in obtn2:
+                if obtn:
+                    break
+                else:
+                    obtn.append(x.pk)
+        if not obtn:
+            form = PagosF(request.POST)
+            if form.is_valid():
+                post = form.save(commit=False)
+                post.origen = request.user
+                post.Num_Bolsa = Bolsa.objects.get(id=pk)
+                post.f_envio = timezone.now()
+                post.save()
+                return redirect('Bolsas')
+        else:
+            return HttpResponseRedirect("Error")
+
+    else:
+        form = PagosF()
+
+
+    return render(request, 'Pagos1.html', {'form': form})
+
+def Pago2(request, pk):
+    if request.method == "POST":
+        form = PagosAF(request.POST)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.save()
+            return redirect('Bolsas')
+    else:
+        form = PagosAF()
+    return render(request, 'Pagos1.html', {'form': form})

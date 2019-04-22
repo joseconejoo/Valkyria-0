@@ -6,7 +6,7 @@
 <div class="fields" id="dentroboto">
 <h2>Registro</h2>
 	{% for field in form %}
-	<form method="post">
+	<form method="POST">
 		
 			{% csrf_token %}
 		    {{ field.errors }}
@@ -15,7 +15,19 @@
 		    <p class="help">{{ field.help_text|safe }}</p>
 		    {% endif %}
 		{% endfor %}
+{% for field in form2 %}
+		{% csrf_token %}
+		<div class="errores">
+			{{ field.errors }}
+		</div>
+	    
+	    {{ field.label_tag }} {{ field }}
+	    <p></p>
+	    {% if field.help_text %}
+	    <p class="help">{{ field.help_text|safe }}</p>
+	    {% endif %}
 
+	{% endfor %}
 		<button type="submit" id="regis" >Registrar</button>
 		</div>
 

@@ -1,21 +1,11 @@
 {% extends 'index.html' %}
-{% load staticfiles %}
-
-{% block title %}Login{% endblock %}
 
 {% block content %}
-{% if user.is_authenticated %}
-{% else %}
-<div class="log_in">
 
-<h2>Login</h2>
+<div class="Pagos1">
+
+<h1 class="Pag1">Descripcion de Transferencia</h1>
 {% for field in form %}
-<!--
-<script>
-window.onload = accion;
-
-</script> 
--->
 <form method="post">
 		{% csrf_token %}
 		<div class="errores">
@@ -29,11 +19,8 @@ window.onload = accion;
 	    {% endif %}
 
 	{% endfor %}
-
-	<button type="submit" > <img src="{% static 'css/imagen/log_b_5.jpg' %}"width="100" height="100"></button>
-
+	
+	<button type="submit" >Guardar</button>
 	</div>
 </form>
-
-{% endif %}
 {% endblock %}

@@ -2,9 +2,9 @@
 
 {% block content %}
     <div class="post">
-        {% if post.published_date %}
+        {% if post.fecha_publicacion %}
             <div class="date">
-                {{ post.published_date }}
+                {{ post.fecha_publicacion }}
             </div>
             
         {% endif %}
@@ -13,9 +13,9 @@
             <a class="btn btn-default" href="{% url 'post_edit' pk=post.pk %}"><span class="glyphicon glyphicon-pencil"></span></a>
         {% endif %}
 
-        <h1>{{ post.title }}</h1>
-        <p>{{ post.text|linebreaksbr }}</p>
-        <p>Autor: {{ post.author }}</p>
+        <h1>{{ post.titulo }}</h1>
+        <p>{{ post.texto|linebreaksbr }}</p>
+        <p>Autor: {{ post.autor }}</p>
 
     </div>
 {% endblock %}
