@@ -22,43 +22,15 @@ def post_detail(request, pk):
     post = get_object_or_404(Post, pk=pk)
     return render(request, 'post_detail.html', {'post': post})
 def post_list(request):
-    """
-    print (User.objects.get(id=6))
-    misReservas = Datos.objects.filter(usuario__username='Metal')
-    #misReservas = Datos.objects.filter(usuario='Metal')
-    #eso retorn un int por lo visto, y da error si no lo coloco con usuario __username
-    #la instruccion hecha correctamente me retorna el return de la tabla Datos
-    for x12 in misReservas:
-        print (x12)
-        print (x12)
-
-
-    print (str(request.user) + "hola "+str(request.user.pk))
-
-    for x in post1:
-        print (x.Nombre_Del_CaMPO)
-    """
     if request.user.is_authenticated == True:
         
         posts = Post.objects.filter(fecha_publicacion__lte=timezone.now()).order_by('-fecha_publicacion')
-        # el - en fecha_publicacion se imprime descendente si quito el " - " se vuelve ascendente
-        #fecha_publicacion__lte es una fecha para comparar y ordenad el fecha_publicacion
-        #datos = Datos.objects.get(usuario_id=10)
         if request.user.is_authenticated==True and Datos.objects.filter(usuario_id=request.user.pk).exists()==True:
-            #datos no lleva request.datos porque eso se configura en el wsgi, es decir porque
-            #la de user es externa lleva request.user en resumidas palabras
-            #if user is not None:
-            #Books.objects.order_by('name')
             usuarioPs=request.user.pk
             datos = Datos.objects.get(usuario_id=usuarioPs)
             return render(request, 'post_list.html', {'posts': posts, 'datos': datos})
         else:
             return render(request, 'post_list.html', {'posts': posts})
-
-        #usar usuario_id=10 y pk=10 es lo mismo
-        #objects.get es el que funciona
-        #datos = Datos.objects.filter(Datos, pk=pk)
-        #datos = Datos.objects.filter(dingreso__lte=timezone.now()).order_by('dingreso')
     else:
         return HttpResponseRedirect("login")
 
@@ -74,8 +46,6 @@ def datos_u(request, pk):
             if form.is_valid():
                 post = form.save(commit=False)
                 post.usuario = User.objects.get(id=pk)
-                #Si no coloco user.objects.get y solo coloco la pk o variable, no funciona
-                #Todo debe estar "instanciado"
                 post.fedicion = timezone.now()
                 post.save()
 
@@ -91,29 +61,18 @@ def Datos1(request):
             post.usuario = request.user
             post.fedicion = timezone.now()
             post.save()
-            """
-            print (post.usuario + "AKA1")
-            ese print no se va a imprimir porque se ejecuta con POST y lo "protege"
-            """
             return redirect('datos_u', pk=post.pk)
-            #si cambio la pk de post a datos.usuario permite crear varios datos bug. y unique en models
-            #Permite crear varios "datos" a un mismo usuario por un Bug. Ademas de que no tenia habilitado 
-            #el request.user
     else:
         form = DatosF()
     return render(request, 'datose.html', {'form': form})
-    #datos1 no tiene HTML porque esta usando el de datose
-    #podria usar diccionarios en el form para cambiar nombre de campos quizas
 def datose(request, pk):
     post = get_object_or_404(Datos, pk=pk)
     if request.method == "POST":
         form = DatosF(request.POST, instance=post)
-        #la instancia sirve para almacenar los datos que se recogieron en el formulario
         if form.is_valid():
             post = form.save(commit=False)
             post.usuario = request.user
             post.fedicion = timezone.now()
-            #en vez de fedicion estaba fecha_publicacion, esto ocasionaba que no me guardara nada en fedicion
             post.save()
             return redirect('datos_u', pk=post.pk)
     else:
@@ -170,8 +129,6 @@ def registros1(request):
 
 class login(LoginView):
     template_name = 'login.html'
-    #la funcion dispatch viene de LoginView el cual como template_name se sobreescribe como
-    #si fuese un molde
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_authenticated!=True:
 
@@ -273,37 +230,16 @@ def Error(request):
 
 def Pago1(request, pk):
     if request.method == "POST":
-        pagb = Bolsa.objects.order_by('id')
-        pag = Pagos.objects.filter(origen=request.user.pk).order_by('Num_Bolsa')
-        obtn,obtn2 = [],[]
-        for x in pag:
-            if obtn2:
-                break
-            else:
-                obtn2.append(int(str(x.Num_Bolsa)))
-
-        for x in pagb:
-            if x.pk in obtn2:
-                if obtn:
-                    break
-                else:
-                    obtn.append(x.pk)
-        if not obtn:
-            form = PagosF(request.POST)
-            if form.is_valid():
-                post = form.save(commit=False)
-                post.origen = request.user
-                post.Num_Bolsa = Bolsa.objects.get(id=pk)
-                post.f_envio = timezone.now()
-                post.save()
-                return redirect('Bolsas')
-        else:
-            return HttpResponseRedirect("Error")
-
+        form = PagosF(request.POST)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.origen = request.user
+            post.Num_Bolsa = Bolsa.objects.get(id=pk)
+            post.f_envio = timezone.now()
+            post.save()
+            return redirect('Bolsas')
     else:
         form = PagosF()
-
-
     return render(request, 'Pagos1.html', {'form': form})
 
 def Pago2(request, pk):
