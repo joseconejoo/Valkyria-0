@@ -11,7 +11,7 @@ class PagosAF(forms.ModelForm):
 class PagosF(forms.ModelForm):
 	class Meta:
 		model = Pagos
-		fields = ('referencia',)
+		fields = ('referencia','banco')
 
 class ValidF(forms.ModelForm):
 

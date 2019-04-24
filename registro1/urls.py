@@ -9,10 +9,15 @@ urlpatterns = [
     path('post/new', views.post_new, name='post_new'),
     path('post/<int:pk>/edit/', views.post_edit, name='post_edit'),
     path('registros', views.registros1, name='registros1'),
+    #si no se define no actua el int:pk
     path('perfil/<int:pk>/', views.datos_u, name='datos_u'),
+    #habia colocado mal el int:pk/> no lo habia cerrado y ocasiono un bug con el "/"
+    # habia colocado <int:pk/>
+    # lo corregi a <int:pk>/ pero daba error le agregue // y luego le borre uno
     path('perfil', views.Datos1, name='datos1'),
     path('datos/<int:pk>/edit/', views.datose, name='datose'),
     path('login/', views.login.as_view(), name='login'),
+    #error de 1 tomado pero regresa 2. si no coloco as_view
 
     path('u_lista', views.v_us1, name='v_us1'),
     path('bolsa/<int:pk>/', views.Bolsa1, name='Bolsa'),
@@ -23,7 +28,9 @@ urlpatterns = [
     path('Codigos/gen', views.Valid1, name='Valid'),
     path('Error', views.Error, name='Error'),
     path('pago/<int:pk>/', views.Pago1, name='Pago1'),
-    path('pago/<int:pk>/', views.Pago2, name='Pago2'),
+    path('pagos/<int:pk>/', views.Pago2, name='Pago2'),
+    path('Datos-Pdf/<int:pk>/', views.reportD, name='reportD'),
+    path('buscador/', views.def_V, name='def_V'),
 
 
 

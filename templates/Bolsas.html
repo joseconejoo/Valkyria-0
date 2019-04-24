@@ -18,7 +18,11 @@
                     {% if post1.Num_Bolsa %}
 
                         {% ifequal post1.Num_Bolsa post %}
-                            <span>Esperando Comprobacion</span>
+                            {% if post1.confirmacion %}
+                                <span>Pago Realizado</span>
+                            {% else %}
+                                <span>Esperando Comprobacion</span>
+                            {% endif %}
                         {% else %}
 
                         {% endifequal %}

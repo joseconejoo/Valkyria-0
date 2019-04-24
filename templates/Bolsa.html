@@ -40,6 +40,23 @@
                 {{ post.fecha_publicacion }}
             </div>
         {% endfor %}
+        <br>
+        <br>
+        <br>
+        {% for pagos in post4 %}
 
+            <span>Usuario: {{pagos.origen}} -</span>
+            <span>Referencia: {{pagos.referencia}} </span>
+            <span>Banco {{pagos.banco}} -</span>
+            <span>Fecha: {{pagos.f_envio}}</span>
+            {% if pagos.confirmacion %}
+                <span>Ha realizado su pago</span>
+            {% else %}
+            <a class="btn btn-default" href="{% url 'Pago2' pk=pagos.pk %}"><span class="glyphicon glyphicon-pencil"></span>editar</a>
+                <span>Confirmar pago</span>
+            {% endif %}
+        <br>
+        <br>
+        {% endfor %}
     </div>
 {% endblock %}

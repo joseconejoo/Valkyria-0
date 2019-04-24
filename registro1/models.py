@@ -20,6 +20,9 @@ class Post(models.Model):
     def publish(self):
         self.fecha_creacion = timezone.now()
         self.save()
+    #El __str__ es lo que devolvera al escribir xxxx.objects.all()
+    #Si se buguea la clave foranea se debe borrar todo lo de migrations
+    #menos el __init__ y el cache, y el archivo de la base de datos
     def __str__(self):
         return self.titulo
 
@@ -27,6 +30,9 @@ class Datos(models.Model):
     usuario = models.OneToOneField('auth.User',on_delete=models.CASCADE, primary_key=True, unique=True)
     nombre = models.CharField(max_length=200, default = "Ingrese Nombre")
     apellido= models.CharField(max_length=200, default = "Ingrese Apellido")
+    #dingreso=models.DateTimeField(default=timezone.now)
+    #Si da algun error a  la hora de hacer migraciones y pide que rellene campo
+    # solo debo escribir algo como str("Null") si es letra o int(1)
     cedula=models.IntegerField(default = 20000)
     email=models.EmailField(default = 'ejemplo@go.com')
     fedicion=models.DateTimeField(blank=True, null=True)
@@ -68,6 +74,7 @@ class Pagos(models.Model):
     confirmacion = models.BooleanField(null=True, blank=True)
     origen = models.ForeignKey('auth.User', on_delete=models.CASCADE, null=True)
     f_envio = models.DateTimeField(blank=True, null=True)
+    banco = models.CharField(max_length=200)
 
     def __str__(self):
         return str(self.id)
