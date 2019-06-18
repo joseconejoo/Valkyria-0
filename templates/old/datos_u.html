@@ -1,0 +1,25 @@
+{% extends 'index.html' %}
+
+{% block content %}
+<div class="datos">
+
+    {% if user.is_authenticated %}
+
+	<a class="btn btn-default" href="{% url 'datose' pk=datos.pk %}"><span class="glyphicon glyphicon-pencil"></span>editar</a>
+
+
+	<p> </p>
+	<p>Nombre de usuario: {{ datos.usuario|linebreaksbr }}</p>
+	<p>Nombre: {{ datos.nombre|linebreaksbr }}</p>
+	<p>Apellido:  {{ datos.apellido|linebreaksbr }}</p>
+	<p>Cedula: {{ datos.cedula|linebreaksbr }}</p>
+	<p>Correo:  {{ datos.email|linebreaksbr }}</p>
+
+	<div class="date">
+	    Ultima edicion de perfil: {{ datos.fedicion }}
+	</div>
+    {% endif %}
+    <a class="btn btn-default" href="{% url 'reportD' pk=datos.pk %}"><span class="glyphicon glyphicon-pencil"></span>Pdf Version</a>
+
+</div>
+{% endblock %}

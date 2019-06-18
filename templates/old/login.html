@@ -1,0 +1,40 @@
+{% extends 'index.html' %}
+{% load staticfiles %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+{% if user.is_authenticated %}
+{% else %}
+<div class="log_in">
+
+<h2>Login</h2>
+<!--
+<script>
+window.onload = accion;
+
+</script> 
+-->
+<form method="post">
+	{% for field in form %}
+
+		{% csrf_token %}
+		<div class="errores">
+			{{ field.errors }}
+		</div>
+	    
+	    {{ field.label_tag }} {{ field }}
+	    <p></p>
+	    {% if field.help_text %}
+	    <p class="help">{{ field.help_text|safe }}</p>
+	    {% endif %}
+
+	{% endfor %}
+
+	<button type="submit" > <img src="{% static 'css/imagen/log_b_5.jpg' %}"width="100" height="100"></button>
+
+	</div>
+</form>
+
+{% endif %}
+{% endblock %}

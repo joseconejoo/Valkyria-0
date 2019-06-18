@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.humanize',
     "registro1"
 ]
 
@@ -74,6 +75,8 @@ WSGI_APPLICATION = 'Valkyria1.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
+
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -81,6 +84,22 @@ DATABASES = {
     }
 }
 
+
+"""
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'OPTIONS': {
+        'database':'Valkyria',
+        'user' :'root',
+        'password':'PASSWORD',
+        'default-character-set':'utf8',
+
+
+        },
+    }
+}
+"""
 
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators

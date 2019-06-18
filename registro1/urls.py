@@ -31,8 +31,13 @@ urlpatterns = [
     path('pagos/<int:pk>/', views.Pago2, name='Pago2'),
     path('Datos-Pdf/<int:pk>/', views.reportD, name='reportD'),
     path('buscador/', views.def_V, name='def_V'),
-
-
+    path('añadiradm/<int:pk>/', views.adminM, name='añadm'),
+    path('quitaradm/<int:pk>/', views.adminQ, name='quadm'),
+    path('Bolsa_P/<int:pk>/', views.Bolsa1_P, name='Bolsa1_P'),
+    path('aceptarusers/', views.a_us, name='a_us'),
+    path('User?12@#|2aprove?/<int:pk>', views.userAP, name='userAP'),
+    path('User?14@#|2aprove?/<int:pk>', views.userNE, name='userNE'),
+    path('Bolsr?11@#@|2close?/<int:pk>', views.cerrarBols, name='cerrarBols'),
 
 
 ]

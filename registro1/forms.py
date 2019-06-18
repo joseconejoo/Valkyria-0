@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
-from .models import Pagos, Codigos, Datos, Post, Bolsa, prod_Bolsa, product
+from .models import Pagos, Codigos, Datos, DatosPrev, Post, Bolsa, prod_Bolsa, product
 from django.contrib.auth.forms import UserCreationForm
 
 class PagosAF(forms.ModelForm):
@@ -11,7 +11,7 @@ class PagosAF(forms.ModelForm):
 class PagosF(forms.ModelForm):
 	class Meta:
 		model = Pagos
-		fields = ('referencia','banco')
+		fields = ('referencia','banco','f_envio')
 
 class ValidF(forms.ModelForm):
 
@@ -28,12 +28,17 @@ class PostForm(forms.ModelForm):
 class DatosF(forms.ModelForm):
 	class Meta:
 		model = Datos
-		fields = ('nombre', 'apellido', 'cedula', 'email')
+		fields = ('nombre', 'apellido', 'cedula', 'email', 'manzana')
+
+class DatosPrevF(forms.ModelForm):
+	class Meta:
+		model = DatosPrev
+		fields = ('nombre', 'apellido', 'cedula')
 
 class BolsaF(forms.ModelForm):
 	class Meta:
 		model = Bolsa
-		fields = ('fecha_B', 'coste_B')
+		fields = ()
 
 class prod_BolsaF(forms.ModelForm):
 	class Meta:

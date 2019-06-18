@@ -1,0 +1,134 @@
+{% extends 'index.html' %}
+
+{% load humanize %} 
+{% block content %}
+<div class="bg-color" class="section-padding">
+  <div class="container">
+    <div class="row">
+      <div class="text-center" style="padding:60px;">
+        <h1 class="header-h">Bolsa <span> {{post.fecha_B|date:'Y'}} -{{post.fecha_B|date:'F'}}</span> </h1>
+
+        <br>
+        <br>
+      
+
+      </div>
+      <div class="col-md-12" style="padding-bottom:60px;">
+            {% if user.is_staff or user.is_superuser %}
+
+              {% if user.is_staff %}
+              <h2 class="header-h text-center">Pago de Habitantes</h2>
+              {% endif %}
+              {% if user.is_superuser %}
+              <h2 class="header-h text-center">Pago de Jefes de Calle</h2>
+
+              {% endif %}
+
+            <table class="bg-color">
+                <tr>
+                  <th>Usuario</th>
+                  <th>Referencia</th>
+                  <th>Banco</th>
+                  {% if user.is_superuser %}
+                  <th>Monto Estimado</th>
+                  {% endif %}
+
+                  <th>Fecha del pago</th>
+                  <th>Pago</th>
+
+
+                </tr>
+
+                {% for pagos in post4 %}
+                <tr>
+                    <td> <a href="{% url 'datos_u' pk=pagos.nombpks %}">{{pagos.origen}}</a> - {{pagos.nombress}}</td>
+                    <td>{{pagos.referencia}} </td>
+                    <td>{{pagos.banco}} </td>
+                    {% if user.is_superuser %}
+                    <td>{{pagos.estimado1|intcomma}} ({{pagos.famili}} Familias) </td>
+                    {% endif %}
+
+                    <td>{{pagos.f_envio}}</td>
+                    {% if pagos.confirmacion %}
+                        <td>Ha realizado su pago</td>
+                    {% else %}
+                    <td>
+                        <a class="top-menu"><span class="fa fa-pencil" required id="iconB" data-toggle="modal" data-target="#myModal1" data-id="{{post.pk}}" data-href="{% url 'Pago2' pk=pagos.pk %}"> </span></a>
+
+                        <span>Confirmar pago</span>
+                    </td>
+                    {% endif %}
+                </tr>
+                <br>
+                <br>
+                {% endfor %}
+ 
+            </table>
+
+            {% endif %}
+
+
+
+
+
+
+
+
+            <div class="container-modal">
+              <div class="modal fade" id="myModal1">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                  
+                    <div class="modal-header">
+                      <h4 class="modal-title text-center" id="pr1">Confirmar Pago</h4>
+
+                      <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    
+                    <div class="modal-body" id="popupb">
+
+                      <form accept-charset="UTF-8" method='post' action="asd" id="F-bs-1" name="amxj">
+
+                        <fieldset>
+                          {% for field in form2 %}
+                          {% csrf_token %}
+
+                            <div class="errores">
+                              {{ field.errors }}
+                            </div>
+                              {% if forloop.counter == 1%}
+                              <div class="text-center"> {{field}}
+                              </div>
+                              {% endif %}
+
+                              <p></p>
+                              {% if field.help_text %}
+                              <p class="help">{{ field.help_text|safe }}</p>
+                              {% endif %}
+
+                          {% endfor %}
+
+                          <button class="btn btn-lg btn-primary btn-block" type="submit" id="enviof-1">Enviar</button>
+                        </fieldset>
+                        <br>
+
+
+                      </form>
+                    </div>
+                                      
+                  </div>
+                </div>
+
+
+            </div>
+
+          </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends 'index.html' %}
+
+{% block content2 %}
+
+
+{% endblock %}
+{% block entrada %}
+
+
+{% endblock %}
+{% block content %}
+
+<form class="def_V" action="{% url 'def_V' %}" method='post'>
+  {% csrf_token %}
+  <input type="text" placeholder="Buscar..." name="B_V" 
+      value='{{ query }}' required>
+  <button type="submit">Search</button>
+</form>
+    {% for v_us1 in v_us %}
+
+        <div class="usuarios">
+          <p>Nombre de usuario:<a href="{% url 'datos_u' v_us1.pk %}"> {{v_us1 }}</a></p>
+        </div>
+    {% endfor %}
+{% endblock %}

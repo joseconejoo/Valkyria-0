@@ -1,25 +1,69 @@
 {% extends 'index.html' %}
+{% load humanize %}
 
-{% block content2 %}
-
-
-{% endblock %}
-{% block entrada %}
-
-
-{% endblock %}
 {% block content %}
+<div class="bg-color" class="section-padding">
+	<div class="container">
+		<h2 class="header-h text-center" >Lista de Usuarios</h2>
+		<form class="def_V text-center" action="{% url 'def_V' %}" method='post'>
+		  {% csrf_token %}
+		  <input type="text" placeholder="Buscar..." name="B_V" 
+		      value='{{ query }}' required>
+		  <button type="submit">Search</button>
+		</form>
 
-<form class="def_V" action="{% url 'def_V' %}" method='post'>
-  {% csrf_token %}
-  <input type="text" placeholder="Buscar..." name="B_V" 
-      value='{{ query }}' required>
-  <button type="submit">Search</button>
-</form>
-    {% for v_us1 in v_us %}
+		<table class="bg-color">
+		<tr>
+		  <th>Nº</th>
+		  <th>Usuario</th>
+		  <th>Nombre</th>
+		  <th>Cedula</th>
+		  <th>Perfil</th>
 
-        <div class="usuarios">
-          <p>Nombre de usuario:<a href="{% url 'datos_u' v_us1.pk %}"> {{v_us1 }}</a></p>
-        </div>
-    {% endfor %}
+		</tr>
+		{% for v_us1 in v_us %}
+		
+
+		<!-- hola -->
+
+		<tr>
+
+		    <div class="">
+		      <td>
+		        <h3>{{ forloop.counter }}</h3>
+		        </td>
+		        	<td>
+		        	   {{v_us1.username }}
+
+		        	</td>
+		        	<td>
+		        		{% for dat in datos %}
+		        		{% if dat.pk == v_us1.pk %}
+		        			{{dat.nombre}}
+
+		        	  	{% endif %}
+		        	  	{% endfor %}
+
+		        	</td>
+		        	<td>
+		        			{% for dat in datos %}
+		        			{% if dat.pk == v_us1.pk %}
+		        				{{dat.cedula|intcomma}}
+
+		        		  	{% endif %}
+		        		  	{% endfor %}
+
+		        	</td>
+		                  
+		          <td>
+		            <a href="{% url 'datos_u' v_us1.pk %}" class="fa fa-user" style="font-size: 25px;"></a>
+		          </td>
+		        </span>
+		    </div>
+		    </tr>
+		{% endfor %}
+		</table>
+
+	</div>
+</div>
 {% endblock %}

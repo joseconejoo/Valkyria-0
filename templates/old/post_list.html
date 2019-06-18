@@ -1,0 +1,38 @@
+{% extends 'index.html' %}
+
+{% block content2 %}
+  {% if user.is_authenticated %}
+  <div class="M_d">
+    <p id="contSaludo"></p>
+    {{ user.username }}! Mira las nuevas noticias que hay.
+          
+  </div>
+
+    
+    <p></p>
+  {% else %}
+    <p>Usted es un visitante.</p>
+  {% endif %}
+
+{% endblock %}
+{% block entrada %}
+<a href="{% url 'post_new' %}" class="top-menu"><span class="glyphicon glyphicon-plus" id="Parax123"> Nuevo Post</span></a>
+{% endblock %}
+{% block content %}
+
+
+    {% for post in posts %}
+    <div class="prueba">
+      <div class="post">
+          
+          <h1><a href="{% url 'post_detail' pk=post.pk %}">{{ post.titulo }}</a></h1>
+          <p>{{ post.texto|linebreaksbr }}</p>
+          <div class="date">
+              {{ post.fecha_publicacion }}
+              <p>Autor: {{ post.autor }}</p>
+          </div>
+      </div>
+
+    </div>
+    {% endfor %}
+{% endblock %}

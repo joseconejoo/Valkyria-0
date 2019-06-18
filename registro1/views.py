@@ -1,15 +1,24 @@
 from django.views.generic import FormView, TemplateView, RedirectView
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404, resolve_url
+from django.conf import settings
+
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.urls import reverse, reverse_lazy
+from django.contrib.auth import (
+    REDIRECT_FIELD_NAME, get_user_model, login as auth_login,
+    logout as auth_logout, update_session_auth_hash,
+)
 from django.http import HttpResponseRedirect, HttpResponse, FileResponse
-from .models import Pagos, Codigos, Datos, Post, Bolsa, prod_Bolsa, product
-from .forms import PagosAF, PagosF, ValidF, PostForm,DatosF, BolsaF, prod_BolsaF, productF
+from .models import Pagos, Codigos, Datos, DatosPrev, Post, Bolsa, prod_Bolsa, product
+from .forms import PagosAF, PagosF, ValidF, PostForm,DatosF, DatosPrevF,BolsaF, prod_BolsaF, productF
+import time
 
-import io
+import random
+
+from io import BytesIO
 from reportlab.pdfgen import canvas
 
 from django.contrib.auth.forms import UserCreationForm
@@ -66,9 +75,11 @@ def post_list(request):
 
 def datos_u(request, pk):
     try:
-       dat=Datos.objects.get(pk=pk)
-       datos = get_object_or_404(Datos, pk=pk)
-       return render(request, 'datos_u.html', {'datos': datos,'dat': dat})
+        dat=Datos.objects.get(pk=pk)
+        Verthandi=User.objects.get(pk=pk)
+            
+        datos = get_object_or_404(Datos, pk=pk)
+        return render(request, 'datos_u.html', {'datos': datos,'dat': dat,'usuario1':Verthandi})
 
     except:
         if request.method == "POST":
@@ -102,6 +113,9 @@ def Datos1(request):
             #Permite crear varios "datos" a un mismo usuario por un Bug. Ademas de que no tenia habilitado 
             #el request.user
     else:
+
+        if Datos.objects.filter(usuario_id=request.user.pk).exists():
+            return redirect('datos_u', pk=request.user.pk)
         form = DatosF()
     return render(request, 'datose.html', {'form': form})
     #datos1 no tiene HTML porque esta usando el de datose
@@ -152,21 +166,29 @@ def post_edit(request, pk):
 def registros1(request):
     if request.method == "POST":
         foxr = UserCreationForm(request.POST)
-        form = ValidF(request.POST)
-        if foxr.is_valid():
+        form = DatosPrevF(request.POST)
+        if foxr.is_valid() and form.is_valid():
             post = foxr.save(commit=False)
-            data1 = request.POST.get('codigo')
-            if Codigos.objects.filter(codigo=data1).exists()==True:
-                Codigos.objects.filter(codigo=data1).delete()
-                post.save()
-                return redirect('login')
+            #data1 = request.POST.get('codigo')
+            post.is_active=0
+            post2 = form.save(commit=False)
+            post.save()
+            Metal = User.objects.latest('id')
+            post2.usuario=Metal
+            post2.save()
+            return redirect('login')
+            #if Codigos.objects.filter(codigo=data1).exists()==True:
+                #Codigos.objects.filter(codigo=data1).delete()
+                #post.is_active=0
+                #post.save()
+                #return redirect('login')
 
 
-            else:
-                return HttpResponseRedirect("Error")
+            #else:
+            #    return HttpResponseRedirect("Error")
     else:
         foxr = UserCreationForm()
-        form = ValidF()
+        form = DatosPrevF()
 
     return render(request, 'registros1.html', {'form': foxr,'form2':form})
 
@@ -176,14 +198,29 @@ class login(LoginView):
     #si fuese un molde
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_authenticated!=True:
-
             if self.redirect_authenticated_user and self.request.user.is_authenticated:
+                if self.request.user.is_active==0:
+                    return redirect('/Error')
                 redirect_to = self.get_success_url()
                 return HttpResponseRedirect(redirect_to)
             return super().dispatch(request, *args, **kwargs)
+
         else:
             redirect_to = self.get_success_url()
             return HttpResponseRedirect(redirect_to)
+    def form_valid(self, form):
+        """Security check complete. Log the user in."""
+
+        auth_login(self.request, form.get_user())
+        return HttpResponseRedirect(self.get_success_url())
+
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['request'] = self.request
+        return kwargs
+
+
 
 def v_us1(request):
 
@@ -197,37 +234,217 @@ def v_us1(request):
 
 def Bolsa_N(request):
     if request.method == "POST":
-        form = BolsaF(request.POST) 
-        if form.is_valid():
-            post = form.save(commit=False)
-            post.autor = request.user
-            post.save()
-            return redirect('Bolsa', pk=post.pk)
+        if request.user.is_superuser:
+            try:
+                valks2 = Datos.objects.get(usuario_id=request.user.pk)
+                form = BolsaF(request.POST) 
+                if form.is_valid():
+                    post = form.save(commit=False)
+                    post.autor = request.user
+                    post.fecha_B = timezone.now()
+                    post.save()
+                    return redirect('Bolsa', pk=post.pk)
+
+
+            except:
+                return redirect('datos_u', pk=request.user.pk)
+        else:
+            return redirect('Bolsas')
+
+
     else:
         form = BolsaF()
-    return render(request, 'Bolsa_N.html', {'form': form})
-
-def Bolsa1(request, pk):
+    return redirect('Bolsas')
+def Bolsa1(request, pk,asd=1):
     post = get_object_or_404(Bolsa, pk=pk)
     post2 = prod_Bolsa.objects.filter(Num_Bolsa=pk).order_by('id')
+    #post1 = get_object_or_404(Pagos, pk=pk)
+    fox = ""
+    form3 = "" 
+    form2 = ""
+    Metal = ""
+    if 'arriba1' in request.POST:
+        asd+=1
 
-    skuld=[]
+    if request.user.is_superuser:
+        form2 = PagosAF()
+
+        if post.activa:
+            fox = prod_BolsaF()
+            form3 = productF()
+        
+
+    
+    Skuld=[]
     for x2 in post2:
-        skuld.append(x2)
+        Skuld.append(x2)
 
     post1=""
-    if request.user.is_superuser:
-        post1 = Pagos.objects.filter(Num_Bolsa=pk).order_by('Num_Bolsa')
+    Valhalla=""
+    """
+    try:
+        valks2 = Datos.objects.get(usuario_id=request.user.pk)
+        valks2=valks2.manzana
+
+        Valhalla = []
+        if (request.user.is_staff):
+            post1 = Pagos.objects.filter(Num_Bolsa=pk).order_by('Num_Bolsa')
+            for x in post1:
+                Verthandi= (int(str(x.origen_id)))
+                try:
+
+                    Urd = Datos.objects.get(usuario_id=Verthandi)
+                    if Urd.manzana == valks2:
+                        Valhalla.append(x)
+                except:
+                    pass
+
+    except:
+        return redirect('datos_u', pk=request.user.pk)
+
+    """
+
+
     
     
-    obtn = product.objects.filter(Num_prod__in=skuld).order_by('Num_prod')
-    diccionario={'post': post,'post2':post2,'post3':obtn,'post4':post1}
+    obtn = product.objects.filter(Num_prod__in=Skuld).order_by('Num_prod')
+    diccionario={'post': post,'post2':post2,'post3':obtn,'post4':Valhalla,'form':fox,'form2':form2,'form3':form3,'Metal':Metal}
     return render(request, 'Bolsa.html', diccionario)
+
+
+def Bolsa1_P(request, pk,asd=1):
+    post = get_object_or_404(Bolsa, pk=pk)
+    Metal = ""
+    if 'arriba1' in request.POST:
+        asd+=1
+
+    form2=""
+    if request.user.is_superuser or request.user.is_staff:
+        Metal = Bolsa.objects.latest('id')
+        form2 = PagosAF()
+
+    
+    post1=""
+    try:
+        valks2 = Datos.objects.get(usuario_id=request.user.pk)
+        valks2=valks2.manzana
+
+        Valhalla = []
+        if (request.user.is_staff):
+            post1 = Pagos.objects.filter(Num_Bolsa=pk).order_by('Num_Bolsa')
+            if request.user.is_superuser:
+                pass
+            for x in post1:
+                Verthandi= (int(str(x.origen_id)))
+                if not Verthandi==request.user.pk:
+                    try:
+                        Skuld = User.objects.get(id=Verthandi)
+                        if not Skuld.is_superuser:
+                            
+                            Urd = Datos.objects.get(usuario_id=Verthandi)
+                            if Urd.manzana == valks2:
+                                Valhalla.append(x)
+
+                    except:
+                        pass
+
+
+
+        if (request.user.is_superuser):
+            post1 = Pagos.objects.filter(Num_Bolsa=pk).order_by('Num_Bolsa')
+            if request.user.is_superuser:
+                pass
+            for x in post1:
+                Verthandi= (int(str(x.origen_id)))
+                try:
+                    Skuld = User.objects.get(id=Verthandi)
+                    if (not Skuld.is_superuser) and (Skuld.is_staff):
+                        print ("acaaa \n\n")
+                        Valhalla.append(x)
+
+                except:
+                    pass
+
+        Valkyria=0
+        Valhalla2 = prod_Bolsa.objects.filter(Num_Bolsa=pk).order_by('Num_Bolsa')
+
+        for Skuld in Valhalla2:
+
+
+            try:
+                Urd = product.objects.get(Num_prod=Skuld.pk)
+
+                Valkyria+=Urd.precio*Skuld.cant_prod
+
+            except:
+                pass
+            
+        post = Bolsa.objects.order_by('id')
+
+        Valkyria2=1
+        for Skuld in Valhalla:
+            try:
+                Urd = Datos.objects.get(usuario_id=Skuld.origen)
+                Verthandi = str(Urd.nombre) +" "+str(Urd.apellido)
+                Eldhrimnir = Urd.pk
+                Valkyria2 += 1
+            except:
+                pass
+
+
+            Skuld.nombress= Verthandi
+            Skuld.nombpks= Eldhrimnir
+            Skuld.famili = Valkyria2
+            Skuld.estimado1=Valkyria*Valkyria2
+
+        
+
+    except:
+        return redirect('datos_u', pk=request.user.pk)
+
+
+    diccionario={'post': post,'post4':Valhalla,"form2":form2}
+    return render(request, 'Bolsa_P.html', diccionario)
 
 
 def Bolsas(request):
     post = Bolsa.objects.order_by('id')
+    form = PagosF()
+    form2 =''
+    if request.user.is_superuser or request.user.is_staff:
+        form2 = BolsaF() 
+    
+
+    #post1 = get_object_or_404(Pagos, pk=pk)
+    # creacion de nuevo campo para mostrar en html abajo
     post1 = Pagos.objects.filter(origen=request.user.pk).order_by('Num_Bolsa')
+    for obj in post:
+        Valkyria=0
+        Valhalla = prod_Bolsa.objects.filter(Num_Bolsa=obj.pk).order_by('Num_Bolsa')
+
+        try:
+            Urd = Datos.objects.get(usuario_id=obj.autor)
+            Verthandi = str(Urd.nombre) +" "+str(Urd.apellido)
+            Eldhrimnir = Urd.pk
+        except:
+            pass
+
+        for Skuld in Valhalla:
+
+
+            try:
+                Urd = product.objects.get(Num_prod=Skuld.pk)
+
+                Valkyria+=Urd.precio*Skuld.cant_prod
+
+            except:
+                pass
+            
+        obj.costo = Valkyria
+        obj.nombress= Verthandi
+        obj.nombpks= Eldhrimnir
+
+
     obtn,obtn2 = [],[]
     for x in post1:
         obtn2.append(int(str(x.Num_Bolsa)))
@@ -235,30 +452,41 @@ def Bolsas(request):
         if x.pk not in obtn2:
             obtn.append(x.pk)
 
-    return render(request, 'Bolsas.html', {'posts': post,'posts2':post1,'posts3':obtn})
+    return render(request, 'Bolsas.html', {'posts': post,'posts2':post1,'posts3':obtn,'form':form,'form2':form2})
     
+
+
+def cerrarBols(request, pk):
+    Eldhrimnir = get_object_or_404(Bolsa, pk=pk)
+    Eldhrimnir.activa = False
+    Eldhrimnir.save()
+    return redirect('Bolsas')
+
+
+
 def Product_N(request, pk):
     if request.method == "POST":
+        asdddd=get_object_or_404(Bolsa, pk=pk)
         asddd=Bolsa.objects.get(id=pk)
         fox = prod_BolsaF(request.POST)
-        form2 = productF(request.POST) 
+        form2 = productF(request.POST)
 
         if fox.is_valid() and form2.is_valid():
             post = fox.save(commit=False)
             post.autor = request.user
             post.Num_Bolsa=asddd
             post2 = form2.save(commit=False)
-            post2.Num_prod=post.pk
-            post2.autor = request.user
             post.save()
+            Metal = prod_Bolsa.objects.latest('id')
+            post2.Num_prod=Metal
+            post2.autor = request.user
             post2.save()
 
             return redirect('Bolsa', pk=pk)
     else:
         fox = prod_BolsaF()
         form2 = productF() 
-    return render(request, 'producto.html', {'form': fox,"form2": form2})
-
+    return render(request, 'producto.html', {'form': fox})
 
 def Valid_v(request):
     post = Codigos.objects.order_by('id')
@@ -266,15 +494,20 @@ def Valid_v(request):
     return render(request, 'valids.html', {'code': post})
 
 def Valid1(request):
-    if request.method == "POST":
-        form = ValidF(request.POST)
-        if form.is_valid():
-            post = form.save(commit=False)
-            post.save()
-            return redirect('Valid_v')
+    if request.user.is_superuser or request.user.is_staff:
+        if request.method == "POST":
+            while True:
+                x12 = random.randint(100000000000, 999999999999)
+                if not Codigos.objects.filter(codigo=x12).exists() :
+                    Codigos.objects.create(codigo=x12)
+                    return redirect('Valid_v')
+
+
+        else:
+            form = ValidF()
+        return render(request, 'valid.html', {'form': form})
     else:
-        form = ValidF()
-    return render(request, 'valid.html', {'form': form})
+        return HttpResponseRedirect("/Error")
 
 def Error(request):
     return render(request, "Negado.html")
@@ -284,6 +517,8 @@ def Pago1(request, pk):
         pagb = Bolsa.objects.filter(id=pk).order_by('id')
         pag = Pagos.objects.filter(origen=request.user.pk).order_by('Num_Bolsa')
         obtn,obtn2 = [],[]
+        post79 = get_object_or_404(Bolsa, pk=pk)
+
 
         for x in pagb:
             if obtn2:
@@ -296,16 +531,23 @@ def Pago1(request, pk):
                     break
                 else:
                     obtn.append(int(str(x.Num_Bolsa)))
-            
+        
+        #comprobacion que no haya realizado pago antes
         if not obtn:
             form = PagosF(request.POST)
             if form.is_valid():
-                post = form.save(commit=False)
-                post.origen = request.user
-                post.Num_Bolsa = Bolsa.objects.get(id=pk)
-                post.f_envio = timezone.now()
-                post.save()
-                return redirect('Bolsas')
+
+                if post79.activa:
+                    post = form.save(commit=False)
+                    post.origen = request.user
+                    post.Num_Bolsa = Bolsa.objects.get(id=pk)
+                    post.save()
+                    return redirect('Bolsas')
+
+                else:
+                    return redirect('Bolsas')    
+                
+
         else:
             return HttpResponseRedirect("/Error")
 
@@ -313,10 +555,12 @@ def Pago1(request, pk):
         form = PagosF()
 
 
-    return render(request, 'Pagos1.html', {'form': form})
+    return redirect('Bolsas')    
+
+    #return render(request, 'Pagos1.html', {'form': form})
 
 def Pago2(request, pk):
-    if request.user.is_superuser:
+    if request.user.is_staff or request.user.is_superuser:
         post = get_object_or_404(Pagos, pk=pk)
         if request.method == "POST":
             form = PagosAF(request.POST, instance=post)
@@ -324,46 +568,166 @@ def Pago2(request, pk):
                 if form.is_valid():
                     post = form.save(commit=False)
                     data1 = request.POST.get('confirmacion')
-                    if int(data1)==2:
+                    if data1=="true":
                         post.save()
                     else:
                         Pagos.objects.filter(pk=pk).delete()
                         
-                    return redirect('Bolsa',pk=int(str(post.Num_Bolsa)))
+                    return redirect('Bolsa1_P',pk=int(str(post.Num_Bolsa)))
             else:
-                return redirect('Bolsa',pk=int(str(post.Num_Bolsa)))
+                return redirect('Bolsa1_P',pk=int(str(post.Num_Bolsa)))
 
 
         else:
             if not post.confirmacion:
                 form = PagosAF(instance=post)
             else:
-                return redirect('Bolsa',pk=int(str(post.Num_Bolsa)))
+                return redirect('Bolsa1_P',pk=int(str(post.Num_Bolsa)))
 
         return render(request, 'Pagos1.html', {'form': form})
     else:
         return redirect('/Error')
 
 def reportD(request, pk):
-    buffer = io.BytesIO()
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'inline; filename="mypdf.pdf"'
+    Eldhrimnir = Datos.objects.get(usuario_id=pk)
 
-    p1 = canvas.Canvas(buffer)
-    p1.setFont("Helvetica",14)
-    p1.drawString(70,750,"Bienvenido ")
-    p1.drawString(50,725,"Gracias por su registro, acontinuacion sus datos.")
+    buffer = BytesIO()
+    p = canvas.Canvas(buffer)
 
-    p1.drawString(100, 100, "Nombre: ")
-    p1.drawString(100, 150, "Apellido: ")
-    p1.drawString(100, 200, "Cedula: ")
-    p1.showPage()
-    p1.save()
-    return FileResponse(buffer, as_attachment=True, filename='datos.pdf')
+    # Start writing the PDF here
+    # End writing
+    p.setLineWidth(.3)
+    p.setFont('Helvetica', 12)
+     
+    px=30
+    py=650
+
+    py-=16
+    p.drawString(70,750,"            Este es el perfil de usuario nº "+str(Eldhrimnir.pk))
+    p.drawString(470,660,"Fecha de informacion")
+    p.drawString(500,700,(time.strftime("%d/%m/%y")))
+    p.drawString(px,py,"Nombre: "+str(Eldhrimnir.nombre))
+    py-=16
+    p.drawString( px,py,"Apellido: "+str(Eldhrimnir.apellido))
+    py-=16
+    p.drawString( px,py,"Cedula: "+ str(Eldhrimnir.cedula))
+    py-=16
+    p.drawString( px,py,"Manzana: " + str(Eldhrimnir.manzana))
+    py-=16
+
+    p.showPage()
+    p.save()
+
+    pdf = buffer.getvalue()
+    buffer.close()
+    response.write(pdf)
+
+    return response
 
 def def_V(request):
     if request.user.is_authenticated==True:
         query = request.POST['B_V']
         v_us = User.objects.filter(username__icontains=query).order_by('id')
-        return render(request, 'v_us1.html', {'v_us': v_us,'query':query})
+        Verthandi=[]
+        for Skuld in v_us:
+            try:
+                datos = Datos.objects.get(pk=Skuld.pk)
+                Verthandi.append(datos)
+            except:
+                pass
+
+
+
+        return render(request, 'v_us1.html', {'v_us': v_us,'query':query,'datos':Verthandi})
     
     else:
         return HttpResponseRedirect("/")
+
+def a_us(request):
+    if request.user.is_authenticated==True:
+        
+        v_us = User.objects.filter(is_active=0).order_by('id')
+        Verthandi=[]
+        for Skuld in v_us:
+            try:
+
+                datos = DatosPrev.objects.get(pk=Skuld.pk)
+                Verthandi.append(datos)
+            except:
+                pass
+
+
+
+
+        return render(request, 'v_us2.html', {'v_us': v_us,'datos':Verthandi})
+    
+    else:
+        return HttpResponseRedirect("/")
+
+
+
+def userAP(request, pk):
+    if request.user.is_superuser:
+        Verthandi = get_object_or_404(User, pk=pk)
+
+        Verthandi.is_active = True
+        Verthandi.save()
+        return redirect('a_us')
+
+    else:
+        return redirect ("/")
+
+
+def userNE(request, pk):
+    if request.user.is_superuser:
+        Verthandi = get_object_or_404(User, pk=pk)
+        Verthandi.delete()
+        
+        return redirect('a_us')
+
+    else:
+        return redirect ("/")
+
+def adminM(request, pk):
+    if request.user.is_superuser:
+        Verthandi = User.objects.get(id=pk)
+        Eldhrimnir = Datos.objects.get(usuario_id=pk)
+        Urd = Datos.objects.filter(manzana=Eldhrimnir.manzana)
+
+        Valhalla = []
+        if  request.user.is_superuser:
+            for x in Urd:
+                if User.objects.get(id=x.pk).is_staff:
+                    Valhalla.append(x)
+                    break
+
+
+        print (Valhalla)
+        if not Valhalla:
+            if not Verthandi.is_superuser:
+                if request.user.is_superuser:
+                    Verthandi.is_staff = True
+                    Verthandi.save()
+                    return redirect('datos_u', pk=pk)
+
+            else:
+                return redirect('datos_u', pk=pk)
+
+        else:
+            return redirect('datos_u', pk=pk)
+
+    else:
+        return redirect ("/")
+
+def adminQ(request, pk):
+    if request.user.is_superuser:
+        Verthandi = get_object_or_404(User, pk=pk)
+
+        Verthandi.is_staff = False
+        Verthandi.save()
+        return redirect('datos_u', pk=pk)
+
+    else:
+        return redirect ("/")

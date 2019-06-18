@@ -8,6 +8,80 @@
           
   </div>
 
+
+{% block info %}
+
+<div id="highlighted-slider" class="container">
+  <div class="item-slider" data-toggle="owlcarousel" data-owlcarousel-settings='{"singleItem":true, "navigation":true, "transitionStyle":"fadeUp"}'>
+    <div class="item">
+      <div class="row">
+        <div class="bg-color21 col-md-1 hidden-xs">
+          
+        </div>
+        <div class="col-md-5 text-right-md item-caption bg-color3">
+          <p class="h1 text-weight-light">
+              
+            </p>
+          <p class='titulo-s'>La unidad lo hace todo y, por lo mismo, debemos conservar este precioso principio
+            <br><br>
+            -Simon Bolivar</p>
+        </div>
+        <div class="bg-color2 col-md-1 hidden-xs">
+          
+        </div>
+
+        <div class="col-md-3 hidden-xs">
+          <img src="static/css2/img/Simon-bolivar.jpg" alt="" class="center-block img-responsive">
+        </div>
+      </div>
+    </div>
+    <div class="item">
+      <div class="row">
+        <div class="bg-color21 col-md-1 hidden-xs">
+          
+        </div>
+        <div class="col-md-5 text-right-md item-caption bg-color3">
+
+            <p class='titulo-s'>La unidad lo hace todo y, por lo mismo, debemos conservar este precioso principio
+
+            -Simon Bolivar</p>
+        </div>
+        <div class="bg-color2 col-md-1 hidden-xs">
+          
+        </div>
+
+        <div class="col-md-3 hidden-xs">
+          <img src="img/slides/slide2.png" alt="" class="center-block img-responsive">
+        </div>
+      </div>
+    </div>
+    <div class="item">
+      <div class="row">
+        <div class="bg-color21 col-md-1 hidden-xs">
+          
+        </div>
+
+        <div class="col-md-5 text-weight-light-md item-caption bg-color3">
+          <h2 class="h1 text-weight-light">
+              Valkyria
+            </h2>
+
+            <p class='titulo-s'>Sistema de Información Para el Registro y Control Del Clap “Alimento” En La Comunidad Arenosa1.</p>
+        </div>
+        <div class="bg-color2 col-md-1 hidden-xs">
+          
+        </div>
+
+        <div class="col-md-3 hidden-xs">
+          <img src="static/css2/img/Simon-bolivar.jpg" alt="" class="center-block img-responsive">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+
     
     <p></p>
   {% else %}
@@ -16,21 +90,47 @@
 
 {% endblock %}
 {% block entrada %}
-<a href="{% url 'post_new' %}" class="top-menu"><span class="glyphicon glyphicon-plus" id="Parax123"> Nuevo Post</span></a>
+
 {% endblock %}
 {% block content %}
+<div class="bg-color" class="section-padding">
+  <div class="container">
+    <div class="row">
+      <div class="col-xs-12 text-center" style="padding:60px;">
+        <h1 class="header-h">Noticias Recientes</h1>
+        <p class='titulo-s'>Publicaciones de importancia para los miembros de la comunidad</p>
+      </div>
+      <div class="col-md-12" style="padding-bottom:60px;">
+        <div class="item active left">
+          </div>
+          {% if user.is_superuser %}
+          <a href="{% url 'post_new' %}" class="top-menu"><span class="glyphicon glyphicon-plus" id="Parax123"> Nuevo Post</span></a>
+          {% endif %}
 
+          {% for post in posts %}
+            <div class="col-md-4 col-sm-4 details-text">
+              <div class="content-holder">
+                <h2>{{ post.titulo|truncatechars:13 }}</h2>
+                <p>{{ post.texto|truncatechars:255 }}</p>
+                <address>
+                    <strong>Autor: </strong>
+                    {{post.autor|truncatechars:20}}                            
+                    <br>
+                    <strong>Hora: </strong>
+                    {{ post.fecha_publicacion }}
+                </address>
 
-    {% for post in posts %}
-
-        <div class="post">
-            
-            <h1><a href="{% url 'post_detail' pk=post.pk %}">{{ post.titulo }}</a></h1>
-            <p>{{ post.texto|linebreaksbr }}</p>
-            <div class="date">
-                {{ post.fecha_publicacion }}
-                <p>Autor: {{ post.autor }}</p>
+                <a class="btn btn-imfo btn-read-more" href="{% url 'post_detail' pk=post.pk %}">Leer Mas</a>
+              </div>
             </div>
+
+          {% endfor %}
+
+          </div>
         </div>
-    {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+
 {% endblock %}

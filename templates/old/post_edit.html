@@ -1,0 +1,26 @@
+{% extends 'index.html' %}
+
+{% block content %}
+
+<div class="p_edit">
+
+<h1 class="NP">New Post</h1>
+{% for field in form %}
+<form method="post">
+		{% csrf_token %}
+		<div class="errores">
+			{{ field.errors }}
+		</div>
+	    
+	    {{ field.label_tag }} {{ field }}
+	    <p></p>
+	    {% if field.help_text %}
+	    <p class="help">{{ field.help_text|safe }}</p>
+	    {% endif %}
+
+	{% endfor %}
+	
+	<button type="submit" >Publicar</button>
+	</div>
+</form>
+{% endblock %}

@@ -1,4 +1,6 @@
 {% extends 'index.html' %}
+{% load humanize %} 
+
 
 {% block content2 %}
 {% endblock %}
@@ -7,51 +9,297 @@
 <a href="{% url 'Bolsa_N' %}" class="top-menu"><span class="glyphicon glyphicon-plus" id="Parax123"> Nueva Bolsa</span></a>
 {% endblock %}
 {% block content %}
+<div class="bg-color" class="section-padding">
+  <div class="container">
+    <div class="row">
+      <div class="text-center" style="padding:60px;">
+        <h1 class="header-h">Lista de Bolsas</h1>
 
+        <br>
+        {% if user.is_superuser%}
+        <a class="top-menu text-left col-xs-12" ><button  id="iconBN" data-toggle="modal" data-target="#myModal2" data-href="{% url 'Bolsa_N' %}"><i class="fa fa-plus"></i> Nueva Bolsa </button></a>
+        <br>
+        {% endif%}
+        <br>
 
-    {% for post in posts %}
+      </div>
+      <div class="col-md-12" style="padding-bottom:60px;">
+        <div class="item active left">
+          </div>
+<!--
 
-        <div class="post">
-            <h3>Numero de bolsa: <a href="{% url 'Bolsa' pk=post.pk %}">{{ post.pk }}</a></h3>
-            {% for post1 in posts2 %}
-
-                    {% if post1.Num_Bolsa %}
-
-                        {% ifequal post1.Num_Bolsa post %}
-                            {% if post1.confirmacion %}
-                                <span>Pago Realizado</span>
-                            {% else %}
-                                <span>Esperando Comprobacion</span>
-                            {% endif %}
-                        {% else %}
-
-                        {% endifequal %}
-                    {% endif %}
+-->
             
-            {% endfor %}
-            {% if posts2 %}
-                {% for post3 in posts3 %}
-                    {% ifequal post3 post.pk %}
-                        <span>No has pagado</span>
-                        <a href="{% url 'Pago1' pk=post.pk %}" class="top-menu"><span class="glyphicon glyphicon-plus" id="Pag24x"> Realizar pago</span></a>
+            <table class="bg-color" >
+            <tr>
+              <th><h3> Bolsa nº</h3></th>
+              <th>Pago</th>
+              <th>Costo</th>
+              <th>Fecha Publicacion</th>
+              <th>Autor</th>
+              {% if user.is_superuser%}
+              <th>Bolsa entregada</th>
+              {% endif%}
+
+            </tr>
+            {% for post in posts %}
+
+
+            <!-- hola -->
+            <tr>
+
+                <div class="">
+                  <td>
+
+                    <h3><a href="{% url 'Bolsa' pk=post.pk %}">{{ forloop.counter }}</a></h3>
+                    </td>
+                    {% for post1 in posts2 %}
+
+
+                            {% if post1.Num_Bolsa %}
+
+                                {% ifequal post1.Num_Bolsa post %}
+                                    {% if post1.confirmacion %}
+                                      <td>
+                                        <span><i class="fa fa-check-circle" id="iconB" style="color:rgba(0, 255, 0,0.95);">  </i> Realizado</span>
+                                      </td>
+                                    {% else %}
+                                    {% if user.is_superuser %}
+                                    <td>
+                                      <span><i class="fa fa-check-circle" id="iconB" style="color:rgba(0, 255, 0,0.95);">  </i> Realizado</span>
+                                    </td>
+                                    {% else %}
+                                    <td>
+                                      <span>Comprobando</span>
+                                    </td>
+
+                                    {% endif %}
+                                    {% endif %}
+                                {% else %}
+
+                                {% endifequal %}
+                            {% endif %}
+                    
+                    {% endfor %}
+
+                    {% if posts2 %}
+                        {% for post3 in posts3 %}
+                            {% ifequal post3 post.pk %}
+
+                              <td>
+
+
+
+                                <span><i class="fa fa-exclamation-triangle" id="iconB" style="color:rgba(255, 0, 0,0.95);"></i>  No. </span>
+
+                                {% if post.activa %}
+                                <a class="top-menu"><span class="fa fa-credit-card" id="iconB" data-toggle="modal" data-target="#myModal1" data-id="{{post.pk}}" data-href="{% url 'Pago1' pk=post.pk %}"> </span></a>
+
+                                {% endif %}
+                              </td>
+                            {% else %}
+                            {% endifequal %}
+                        {% endfor %}
                     {% else %}
-                    {% endifequal %}
-                {% endfor %}
-            {% else %}
-                <span>No has pagado   </span>
-                 <a href="{% url 'Pago1' pk=post.pk %}" class="top-menu"><span class="glyphicon glyphicon-plus" id="Pag24x"> Realizar pago</span></a>
+                      <td>
 
-            {% endif %}
+                        <span><i class="fa fa-exclamation-triangle" id="iconB" style="color:rgba(255, 0, 0,0.75);"></i> No </span>
+
+                        {% if post.activa %}
+                        <a class="top-menu"><span class="fa fa-credit-card" id="iconB" data-toggle="modal" data-target="#myModal1" data-id="{{post.pk}}" data-href="{% url 'Pago1' pk=post.pk %}"> </span></a>
+
+                        {% endif %}
+
+                      </td>
+                      
+
+                    {% endif %}
+
+
+
+                    <td>
+                      {% if post.costo > 0%}
+                      <p>{{ post.costo|intcomma }}</p>
+                      {% endif %}
+                    </td>
+
+                    <span>
+                      <td>
+                        {{ post.fecha_B|date:'Y-m-d '}} <span>{{ post.fecha_B|naturaltime}}</span>
+                      </td>
+                      <td>
+                        <p><a href="{% url 'datos_u' pk=post.nombpks %}">{{ post.autor }}</a>  - {{ post.nombress }}</p>
+                      </td>
+                      {% if user.is_superuser%}
+                      {% if post.activa%}
+                      <td><a class="btn btn-primary" href="{% url 'cerrarBols' pk=post.pk %}">Cerrar</a> </td>
+                      {% else %}
+                      <td>
+                        <span><i class="fa fa-check-circle" id="iconB" style="color:rgba(0, 255, 0,0.95);">  </i> Entregada</span>
+
+                      </td>
+                      {% endif%}
+
+
+
+                      {% endif%}
+
+                    </span>
+                </div>
+                </tr>
+            {% endfor %}
+            </table>
+            {% for post in posts%}
 
 
 
 
-            <p>Costo total: {{ post.coste_B|linebreaksbr }}</p>
 
-            <div class="date">
-                {{ post.fecha_publicacion }}
-                <p>Autor: {{ post.autor }}</p>
-            </div>
+            
+              {% endfor %}
+
+
+
+
+
+
+              <div class="container-modal">
+                <div class="modal fade" id="myModal2">
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                    
+                      <div class="modal-header">
+                        <h4 class="modal-title text-center" id="pr1">Creacion Bolsa</h4>
+
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                      </div>
+
+                      <div class="modal-body" id="popupb">
+                        <form accept-charset="UTF-8" method='post' action="{% url 'Bolsa_N' %}" id="F-bs-1" name="amxj2">
+
+                          <fieldset>
+                            {% csrf_token %}
+
+                            {% for field in form2 %}
+
+                              <div class="errores">
+                                {{ field.errors }}
+                              </div>
+                                {% if forloop.counter == 1%}
+                                <div class="">
+                                  <div class="input-group-lg">
+                                    <input class="form-control" placeholder='Costo de Bolsa' {{field}}
+                                  </div>
+                                </div>
+                                {% endif %}
+                                <p></p>
+                                {% if field.help_text %}
+                                <p class="help">{{ field.help_text|safe }}</p>
+                                {% endif %}
+
+                            {% endfor %}
+
+                            <button class="btn btn-lg btn-primary btn-block" type="submit" id="enviof-1">Enviar</button>
+                          </fieldset>
+                          <br>
+
+
+                        </form>
+                      </div>
+                                        
+                    </div>
+                  </div>
+
+
+              </div>
+
+
+
+
+
+
+
+              <div class="container-modal">
+                <div class="modal fade" id="myModal1">
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                    
+                      <div class="modal-header">
+                        <h4 class="modal-title text-center" id="pr1">Pago Bolsa</h4>
+
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                      </div>
+                      
+                      <div class="modal-body" id="popupb">
+                        <form accept-charset="UTF-8" method='post' action="a" id="F-bs-1" name="amxj">
+
+                          <fieldset>
+                            {% for field in form %}
+
+                              {% csrf_token %}
+                              <div class="errores">
+                                {{ field.errors }}
+                              </div>
+                                {% if forloop.counter == 1%}
+                                <div class="">
+                                  <div class="input-group-lg">
+                                    <input class="form-control" style="color: rgba(255, 255, 255,0.90);" placeholder='Nº Referencia' {{field}}
+                                  </div>
+                                </div>
+                                {% endif %}
+                                {% if forloop.counter == 2%}
+                                <div class="">
+                                  <div class="input-group-lg">
+                                    <input class="form-control" style="color: rgba(255, 255, 255,0.90);" placeholder="Banco" {{field}} 
+                                  </div>
+                                </div>
+                                {% endif %}
+
+                                {% if forloop.counter == 3%}
+                                <div class="">
+                                  <div class="input-group-lg">
+                                    <input type="date" class="form-control" style="color: rgba(255, 255, 255,0.90);" placeholder="Fecha de envio" {{field}} 
+                                  </div>
+                                </div>
+                                {% endif %}
+                                <p></p>
+                                {% if field.help_text %}
+                                <p class="help">{{ field.help_text|safe }}</p>
+                                {% endif %}
+
+                            {% endfor %}
+
+                            <button class="btn btn-lg btn-primary btn-block" type="submit" id="enviof-1">Enviar</button>
+                          </fieldset>
+                          <br>
+
+
+                        </form>
+                      </div>
+                                        
+                    </div>
+                  </div>
+                
+              </div>
+
+
+
+
+
+
+
+
+
+
+
+
+          </div>
+
+          </div>
         </div>
-    {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+
 {% endblock %}

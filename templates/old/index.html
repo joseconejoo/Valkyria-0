@@ -1,0 +1,127 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+
+<html lang="es">
+	
+
+<head>
+
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=divice-width, initial-scale=0.1">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,600|Open+Sans" rel="stylesheet">
+	
+	<link rel="stylesheet" type="text/css" href="{% static 'css/font-awesome.min.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.min.css' %}">
+	<link href='//fonts.googleapis.com/css?family=Lobster&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+	<script type="text/javascript" src="{% static 'css/animacione.js' %}"></script>
+
+	<link rel="stylesheet" type="text/css" href="{% static 'css/style134.css' %}">
+	
+
+	<title>|Valkyria|</title>
+</head>
+<body>
+	<div class="contenedor">
+		<section class="reloj" id="contReloj">
+			    <p id="pHoras"></p>
+			    <p>:</p>
+			    <p id="pMinutos"></p>
+			    <p>:</p>
+			    <p id="pSegundos"></p>
+			</section>
+		<header>
+			<img  id="patria"class= "patria" src="{% static 'css\imagen\patria.png' %}">
+			
+		</header>
+
+		<article id='banner'>
+			{% if user.is_authenticated %}
+
+			<h1 id="tituloh1">Bienvenido.</h1>
+			
+
+			<div id="mySidenav" class="sidenav">
+					<a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+					<a class="boton-abrir" id="M_boton-abrir" href="{% url 'logout' %}">logout</a>
+
+					<a class="boton-abrir" id="M_boton-abrir" href="{% url 'Bolsas' %}">Bolsas</a>
+					<a class="boton-abrir" id="M_boton-abrir" href="{% url 'v_us1' %}">Lista de usuarios</a>
+					<a class="boton-abrir" id="M_boton-abrir" href="{% url 'Valid_v' %}">Lista de codigos</a>
+
+					{% if datos.usuario %}
+					<a class="boton-abrir" id="M_boton-abrir" href="{% url 'datos_u' pk=datos.pk  %}">Perfil</a>
+
+					<a class="boton-abrir" id="M_boton-abrir" href="somos.html">Quienes Somos</a>
+
+
+					<a class="boton-abrir" id="M_boton-abrir"href="https://www.google.co.ve/maps/place/La+Arenosa,+Guanare+3350,+Portuguesa/@9.0424221,-69.7474799,669m/data=!3m1!1e3!4m5!3m4!1s0x8e7cf41990927793:0xc30dd748d5e4c343!8m2!3d9.0393763!4d-69.745075">Mapa Del Sitio</a>
+					{% else %}
+
+					<a  href="{% url 'datos1' %}" id="M_boton-abrir" class="boton-abrir">Perfil</a>
+
+					
+					{% endif %}
+
+					{% else %}
+					<h1 id="tituloh">¿Preparado para ingresar?</h1>
+					<a class="boton-abrir" id="M_boton-abrir" href="{% url 'login'%}">Login</a>
+					<a class="boton-abrir" id="M_boton-abrir" href="{% url 'registros1'%}">Registrarse</a>
+				    {% endif %}
+
+				        
+
+
+			</div>
+			<span onclick="openNav()" class="pull-right menu-icon">☰</span>
+
+		</article>
+		<div class="page-header">
+		    <h1><a href="/">Valkyria</a></h1>
+		    {% if user.is_authenticated %}
+		    {% block entrada %}
+		    {% endblock %}
+		    {% else %}
+		    {% endif %}
+
+		    <p>
+		    	
+		    </p>
+		    {% block content2 %}
+		    {% endblock %}
+		</div>
+
+		<div class="content">
+		    <div class="row">
+		        <div class="col-md-8">
+
+		        {% block content %}
+		        {% endblock %}
+		        </div>
+		    </div>
+		</div>
+		
+		<div class="over" id="over">
+
+			<div class="popup" id="popup">
+				<h3>INICIO DE SESIONs</h3>
+				<h4>El sistema cierra a las 9:00PM.</h4>
+				<form method= "post">
+
+					{# A more "HTML" way of creating the login form#}
+
+				
+
+
+				</form>
+			</div>
+		</div> 
+
+	</div>
+</body>
+<script src="{% static 'js/jquery.min.js' %}"></script>
+<script src="{% static 'js/jquery.easing.min.js' %}"></script>
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+<script src="{% static 'js/custom.js' %}"></script>
+
+</html>

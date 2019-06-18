@@ -1,39 +1,83 @@
-{% extends 'index.html' %}
-{% load staticfiles %}
+{% extends 'index2.html' %}
 
 {% block title %}Login{% endblock %}
 
+
+
+
+
 {% block content %}
-{% if user.is_authenticated %}
-{% else %}
-<div class="log_in">
+  <div id="content">
+    <div class="header">
+      <div class="header-inner">
+        <!--navbar-branding/logo - hidden image tag & site name so things like Facebook to pick up, actual logo set via CSS for flexibility -->
+        <a class="navbar-brand center-block" href="{% url 'index' %}" title="Home">
+          <h1 class="hidden">
+              <img src="img/logo.png" alt="Valkyria Logo">
+              Valkyria
+            </h1>
+            <h2 class="logo-name">Valkyria</h2>
+        </a>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-6 col-sm-offset-3">
+        <div class="panel panel-default" id="loginP">
+          <div class="panel-heading">
+            <h3 class="panel-title">
+            	Login
+              </h3>
+          </div>
+          <div class="panel-body">
 
-<h2>Login</h2>
-{% for field in form %}
-<!--
-<script>
-window.onload = accion;
+          	<form accept-charset="UTF-8" role="form" method='post'>
 
-</script> 
--->
-<form method="post">
-		{% csrf_token %}
-		<div class="errores">
-			{{ field.errors }}
-		</div>
-	    
-	    {{ field.label_tag }} {{ field }}
-	    <p></p>
-	    {% if field.help_text %}
-	    <p class="help">{{ field.help_text|safe }}</p>
-	    {% endif %}
+          		<fieldset>
+          		  {% for field in form %}
 
-	{% endfor %}
+          		    {% csrf_token %}
+          		    <div class="errores">
+          		      {{ field.errors }}
+          		    </div>
+          		      {% if forloop.counter == 1%}
+          		      <div class="form-group">
+          		        <div class="input-group input-group-lg">
+          		          <span class="input-group-addon"><i class="fa fa-fw fa-user" name='username'></i></span>
+          		          <input class="form-control" placeholder='Usuario' {{field}}
+          		        </div>
+          		      </div>
+          		      {% endif %}
+          		      {% if forloop.counter == 2%}
+          		      <div class="form-group">
+          		        <div class="input-group input-group-lg">
+          		          <span class="input-group-addon"><i class="fa fa-fw fa-lock" name='username'></i></span>
+          		          <input class="form-control" placeholder="Contraseña" {{field}} 
+          		        </div>
+          		      </div>
+          		      {% endif %}
 
-	<button type="submit" > <img src="{% static 'css/imagen/log_b_5.jpg' %}"width="100" height="100"></button>
+          		      <p></p>
+          		      {% if field.help_text %}
+          		      <p class="help">{{ field.help_text|safe }}</p>
+          		      {% endif %}
 
-	</div>
-</form>
+          		  {% endfor %}
 
-{% endif %}
+          		  <button class="btn btn-lg btn-primary btn-block" type="submit">Entrar</button>
+          		</fieldset>
+          		<br>
+          		<p class="m-b-0 m-t">No tienes cuenta? <a href="{% url 'registros1' %}">Registrate</a>.</p>
+
+
+          	</form>
+
+
+        </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- /row -->
+  </div>
+
 {% endblock %}

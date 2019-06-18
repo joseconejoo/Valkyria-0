@@ -1,0 +1,62 @@
+{% extends 'index.html' %}
+
+{% block content %}
+    <div class="Bolsa">
+        {% if post.published_date %}
+            <div class="por hacer">
+                {{ post.published_date }}
+            </div>
+            
+        {% endif %}
+        {% if user.is_authenticated %}
+
+            <a class="btn btn-default" href="{% url 'Product_N' pk=post.pk %}"><span class="glyphicon glyphicon-plus">Añadir Producto</span></a>
+        {% endif %}
+        <br>
+        <br>
+        <h4>Numero de Bolsa: {{ post.pk }}</h4>
+        <p>Fecha: {{ post.fecha_B }}</p>
+        <p>Costo Total:  {{ post.coste_B|linebreaksbr }}</p>
+        <p>Autor: {{ post.author }}</p>
+        <br>
+        {% for post in post2 %}
+
+            <div class="productos">
+                
+                {% for post1 in post3 %}
+
+                {% ifequal post1.pk post.pk %}
+
+                    <div class="productos">
+                        
+                        <h4>Nombre de producto: {{ post1.nombre }}</h4>
+                        <p>precio: {{ post1.precio|linebreaksbr }}</p>
+                        {{ post1.fecha_publicacion }}
+                    </div>
+                    {% endifequal %}
+
+                {% endfor %}
+                <p>Cantidad: {{ post.cant_prod|linebreaksbr }}</p>
+                {{ post.fecha_publicacion }}
+            </div>
+        {% endfor %}
+        <br>
+        <br>
+        <br>
+        {% for pagos in post4 %}
+
+            <span>Usuario: {{pagos.origen}} -</span>
+            <span>Referencia: {{pagos.referencia}} </span>
+            <span>Banco {{pagos.banco}} -</span>
+            <span>Fecha: {{pagos.f_envio}}</span>
+            {% if pagos.confirmacion %}
+                <span>Ha realizado su pago</span>
+            {% else %}
+            <a class="btn btn-default" href="{% url 'Pago2' pk=pagos.pk %}"><span class="glyphicon glyphicon-pencil"></span>editar</a>
+                <span>Confirmar pago</span>
+            {% endif %}
+        <br>
+        <br>
+        {% endfor %}
+    </div>
+{% endblock %}
