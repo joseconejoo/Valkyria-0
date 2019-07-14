@@ -14,7 +14,7 @@ class Codigos(models.Model):
 class Post(models.Model):
     autor = models.ForeignKey('auth.User', on_delete=models.CASCADE, null=True)
     titulo = models.CharField(max_length=200)
-    texto = models.TextField()
+    texto = models.CharField(max_length=2000000)
     fecha_creacion = models.DateTimeField(default=timezone.now)
     fecha_publicacion = models.DateTimeField(blank=True, null=True)
 

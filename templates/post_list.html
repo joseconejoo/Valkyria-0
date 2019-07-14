@@ -97,27 +97,30 @@
   <div class="container">
     <div class="row">
       <div class="col-xs-12 text-center" style="padding:60px;">
-        <h1 class="header-h">Noticias Recientes</h1>
-        <p class='titulo-s'>Publicaciones de importancia para los miembros de la comunidad</p>
+        <h1 class="fblanc">Noticias Recientes</h1>
+        <p class='titulo-s fblanc'>Publicaciones de importancia para los miembros de la comunidad</p>
+        <br>
       </div>
       <div class="col-md-12" style="padding-bottom:60px;">
         <div class="item active left">
           </div>
           {% if user.is_superuser %}
-          <a href="{% url 'post_new' %}" class="top-menu"><span class="glyphicon glyphicon-plus" id="Parax123"> Nuevo Post</span></a>
+          <a href="{% url 'post_new' %}" class="top-menu text-center" required id="iconB" data-toggle="modal" data-target="#myModal1" data-id="" data-href="{% url 'post_new' %}"><span class="btn btn-primary botonpublic" id="Parax123"> Nuevo Post</span></a>
+          <br>
+          <br>
           {% endif %}
 
           {% for post in posts %}
             <div class="col-md-4 col-sm-4 details-text">
               <div class="content-holder">
-                <h2>{{ post.titulo|truncatechars:13 }}</h2>
+                <h1 class="fblanc" style="font-size: 31px">{{ post.titulo|truncatechars:13 }}</h1>
                 <p>{{ post.texto|truncatechars:255 }}</p>
                 <address>
                     <strong>Autor: </strong>
-                    {{post.autor|truncatechars:20}}                            
+                    <span class="fblanc">{{post.autor|truncatechars:20}}  </span>
                     <br>
-                    <strong>Hora: </strong>
-                    {{ post.fecha_publicacion }}
+                    <strong>Publicado: </strong>
+                    <span class="fblanc">{{ post.fecha_publicacion }} </span>
                 </address>
 
                 <a class="btn btn-imfo btn-read-more" href="{% url 'post_detail' pk=post.pk %}">Leer Mas</a>
@@ -132,5 +135,79 @@
     </div>
   </div>
 </div>
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-modal">
+  <div class="modal fade" id="myModal1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+      
+        <div class="modal-header">
+          <h4 class="modal-title text-center fblanc" id="pr1">Nueva Publicacion</h4>
+
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        
+        <div class="modal-body" id="popupb">
+          <form accept-charset="UTF-8" method='post' action="a" id="F-bs-1" name="amxj">
+
+            <fieldset>
+              {% for field in form2 %}
+
+                {% csrf_token %}
+                <div class="errores">
+                  {{ field.errors }}
+                </div>
+                  {% if forloop.counter == 1%}
+                  <div class="">
+                    <div class="input-group-lg">
+                      <input class="form-control" style="color: rgba(255, 255, 255,0.90);" placeholder='Titulo' {{field}}
+                    </div>
+                  </div>
+                  {% endif %}
+                  {% if forloop.counter == 2%}
+                  <div class="">
+                    <div class="input-group-lg">
+                      <input class="form-control" style="color: rgba(255, 255, 255,0.90);" placeholder="Informacion" type="text" {{field}} 
+                    </div>
+                  </div>
+                  {% endif %}
+                  <p></p>
+                  {% if field.help_text %}
+                  <p class="help">{{ field.help_text|safe }}</p>
+                  {% endif %}
+
+              {% endfor %}
+
+              <button class="btn btn-lg btn-primary btn-block" type="submit" id="enviof-1">Enviar</button>
+            </fieldset>
+            <br>
+
+
+          </form>
+        </div>
+                          
+      </div>
+    </div>
+  
+</div>
+
+
+
+
+
+
+
+
 
 {% endblock %}

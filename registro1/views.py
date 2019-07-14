@@ -31,7 +31,12 @@ from django.contrib.auth.views import LoginView
 # Create your views here.
 def post_detail(request, pk):
     post = get_object_or_404(Post, pk=pk)
-    return render(request, 'post_detail.html', {'post': post})
+    form =""
+    if request.user.is_superuser:
+        form = PostForm(instance=post)
+
+
+    return render(request, 'post_detail.html', {'post': post, 'form':form})
 def post_list(request):
     """
     print (User.objects.get(id=6))
@@ -49,7 +54,11 @@ def post_list(request):
     for x in post1:
         print (x.Nombre_Del_CaMPO)
     """
+
     if request.user.is_authenticated == True:
+        form2=""
+        if request.user.is_superuser:
+            form2 = PostForm()
         
         posts = Post.objects.filter(fecha_publicacion__lte=timezone.now()).order_by('-fecha_publicacion')
         # el - en fecha_publicacion se imprime descendente si quito el " - " se vuelve ascendente
@@ -62,7 +71,7 @@ def post_list(request):
             #Books.objects.order_by('name')
             usuarioPs=request.user.pk
             datos = Datos.objects.get(usuario_id=usuarioPs)
-            return render(request, 'post_list.html', {'posts': posts, 'datos': datos})
+            return render(request, 'post_list.html', {'posts': posts, 'datos': datos, 'form2':form2})
         else:
             return render(request, 'post_list.html', {'posts': posts})
 
@@ -147,7 +156,9 @@ def post_new(request):
             return redirect('post_detail', pk=post.pk)
     else:
         form = PostForm()
-    return render(request, 'post_edit.html', {'form': form})
+        #return render(request, 'post_edit.html', {'form': form})
+        #Si activo lo de arriba me abre de nuevo la pagina que loco
+
 def post_edit(request, pk):
     post = get_object_or_404(Post, pk=pk)
     if request.method == "POST":
@@ -160,7 +171,6 @@ def post_edit(request, pk):
             return redirect('post_detail', pk=post.pk)
     else:
         form = PostForm(instance=post)
-    return render(request, 'post_edit.html', {'form': form})
 
 
 def registros1(request):
@@ -339,7 +349,7 @@ def Bolsa1_P(request, pk,asd=1):
                 if not Verthandi==request.user.pk:
                     try:
                         Skuld = User.objects.get(id=Verthandi)
-                        if not Skuld.is_superuser:
+                        if (not Skuld.is_superuser) and (not Skuld.is_staff):
                             
                             Urd = Datos.objects.get(usuario_id=Verthandi)
                             if Urd.manzana == valks2:
@@ -359,7 +369,6 @@ def Bolsa1_P(request, pk,asd=1):
                 try:
                     Skuld = User.objects.get(id=Verthandi)
                     if (not Skuld.is_superuser) and (Skuld.is_staff):
-                        print ("acaaa \n\n")
                         Valhalla.append(x)
 
                 except:

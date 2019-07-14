@@ -54,6 +54,15 @@ table {
   background-color: RGBA(0, 0, 0, 0.71);
   min-height: 275px;
 }
+
+.bg-colorlet4 {
+  background-color: RGBA(0, 0, 0, 0.71);
+  min-height: 100%;
+  min-width:50%;
+  max-width: 50%;
+  margin-left: 25%;
+}
+
 .bg-color3 p{
   margin-top: 3%;
 }
@@ -622,7 +631,7 @@ table {
   border-bottom: 2px solid #99ccff;
 }
 
-/*index*/
+/*index 1*/
 @media (min-width: 960px) {
   .item-slider {
     height: 380px;
@@ -644,7 +653,27 @@ table {
 .owl-carousel .owl-controls {
   margin: 0;
 }
-/* foto index */
+/*post_list 1*/
+
+.botonpublic {
+  width: 25%;
+  font-size: 20px;
+  padding: 1%;
+  transform: translate(150%, -50%);
+
+}
+
+.fblanc {
+  color:#d9d9d9;
+}
+
+/*post_detail 1*/
+
+.mrmen {
+  margin-left: 25%;
+}
+
+/* foto index 1 */
 #highlighted-slider img
 {
   padding: 3%;
