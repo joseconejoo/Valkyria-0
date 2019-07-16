@@ -7,7 +7,7 @@
       <div class="text-center" style="padding:60px;">
         <h1 class="fblanc">{{ post.titulo }} <span></span>        {% if user.is_authenticated and user.is_superuser %}
         {% endif %} </h1>
-        <a class="btn btn-default" style="font-size: 15px;" href="{% url 'post_edit' pk=post.pk %}" required id="iconB" data-toggle="modal" data-target="#myModal1" data-id="" data-href="{% url 'post_new' %}"><span class="fa fa-pencil"> Editar</span></a>
+        <a class="btn btn-default" style="font-size: 15px;" href="{% url 'post_edit' pk=post.pk %}" required id="iconB" data-toggle="modal" data-target="#myModal1" data-id="" data-href="{% url 'post_edit' pk=post.pk %}"><span class="fa fa-pencil"> Editar</span></a>
 
       </div>
         <br>
